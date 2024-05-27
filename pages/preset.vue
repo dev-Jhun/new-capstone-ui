@@ -323,24 +323,22 @@
       </v-dialog>
     </v-card>
     <br>
-    <br>
-    <br>
-    <br>
-   
-    <v-row>
-      <v-col>
+    <p style="text-align:justify; text-indent:40px">This table data is from various studies and comprehensive guides on hydroponic crop production, which provide detailed parameters for optimal growing conditions for various crops in tropical environments.</p>
 
-      </v-col>
-    </v-row>
-
-    <p style="text-align:justify; text-indent:40px">Hydroponics is a growing technology that has been widely used in agriculture worldwide. It involves the use of hydroponic systems to grow crops, which are designed to maintain optimal environmental conditions such as temperature, humidity, and nutrient levels. This is particularly important in tropical climates where temperatures can be high. Samarakoon and Weerasinghe emphasize the importance of managing the production environment to maximize crop yield and quality. They suggest that hydroponic growers can create a conducive environment for sustained crop growth and mitigate potential challenges associated with tropical climates. The Food and Agriculture Organization (FAO) emphasizes the importance of nutrient management, environmental control, and crop selection for optimizing hydroponic systems' performance. Rodriguez-Delfin's 2008 study on hydroponic cultivation in Peru provides valuable insights into the practical application of hydroponics in tropical settings. This research serves as a reference for hydroponic growers in similar environments, enabling them to make informed decisions regarding crop selection and cultivation practices to maximize yield and profitability.</p>
-
+    
     <br>
     <br>
-    <!-- <h4>Reference:</h4>
 
-    <p>https://generalhydroponics.com/resources/flora-series-feedcharts/</p>
-    <p>https://aggie-hort.tamu.edu/greenhouse/hydroponics/solutions.html</p> -->
+    <h4>Reference</h4>
+    <br>
+    <p style="text-align:justify; text-indent:40px">According to Resh (2013), successful hydroponic crop growth depends on factors like temperature, humidity, pH, TDS, and water temperature. For example, lettuce grows best at 15-24°C, 50-70% humidity, pH 5.5-6.5, TDS 560-840 ppm, and water temperature 20-24°C.</p>
+    <p style="text-align:justify; text-indent:40px">Jensen (2000) highlights the importance of understanding different hydroponic systems and their suitability for various crops, especially in tropical climates, emphasizing the need for optimal environmental conditions.</p>
+    <p style="text-align:justify; text-indent:40px">Samarakoon and Weerasinghe (2010) stress the importance of managing the environment in hydroponics to maximize crop yield and quality, tailoring conditions to specific crop needs in tropical regions.</p>
+    <p style="text-align:justify; text-indent:40px">The FAO (Savvas and Gruda, 2018) describes hydroponics as an efficient method for integrated crop management in greenhouses, focusing on nutrient management, environmental control, and crop selection for better productivity and sustainability.</p>
+    <p style="text-align:justify; text-indent:40px">Rodriguez-Delfin's (2008) study on hydroponics in Peru provides practical insights and data on optimal conditions for growing crops in tropical climates, helping growers make informed decisions for better yields.</p>
+    <br>
+    <br>
+    
    
 
     <!-- SUCCESS SNACKBAR     -->

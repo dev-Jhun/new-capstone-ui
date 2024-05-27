@@ -450,7 +450,7 @@ export default {
 
 <style>
 .basil {
-  background-color: #fffbe6 !important;
+  background-color: #DFF5FF !important;
 }
 .basil--text {
   color: #356859 !important;

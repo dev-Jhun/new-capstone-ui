@@ -327,16 +327,20 @@
     <br>
     <br>
    
+    <v-row>
+      <v-col>
 
-    <h3>This is a brief explanation of the basic values, nutrients, and temperature required for crop planting in hydroponics farming.</h3>
-    <br>
+      </v-col>
+    </v-row>
 
     <p style="text-align:justify; text-indent:40px">Hydroponics is a growing technology that has been widely used in agriculture worldwide. It involves the use of hydroponic systems to grow crops, which are designed to maintain optimal environmental conditions such as temperature, humidity, and nutrient levels. This is particularly important in tropical climates where temperatures can be high. Samarakoon and Weerasinghe emphasize the importance of managing the production environment to maximize crop yield and quality. They suggest that hydroponic growers can create a conducive environment for sustained crop growth and mitigate potential challenges associated with tropical climates. The Food and Agriculture Organization (FAO) emphasizes the importance of nutrient management, environmental control, and crop selection for optimizing hydroponic systems' performance. Rodriguez-Delfin's 2008 study on hydroponic cultivation in Peru provides valuable insights into the practical application of hydroponics in tropical settings. This research serves as a reference for hydroponic growers in similar environments, enabling them to make informed decisions regarding crop selection and cultivation practices to maximize yield and profitability.</p>
 
-    <h4>Reference:</h4>
+    <br>
+    <br>
+    <!-- <h4>Reference:</h4>
 
     <p>https://generalhydroponics.com/resources/flora-series-feedcharts/</p>
-    <p>https://aggie-hort.tamu.edu/greenhouse/hydroponics/solutions.html</p>
+    <p>https://aggie-hort.tamu.edu/greenhouse/hydroponics/solutions.html</p> -->
    
 
     <!-- SUCCESS SNACKBAR     -->

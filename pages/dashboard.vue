@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#F2F597">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#DFF5FF">
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bold mb-5 text-center">
@@ -17,15 +17,15 @@
                 >Required : {{ tempMin }} - {{ tempMax }}</v-list-item-subtitle
               >
             </v-list-item-content>
-            <v-icon class="display-3" color="red"
+            <v-icon class="display-3" color="blue"
               >mdi-temperature-celsius</v-icon
             >
           </v-list-item>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#AAD9BB">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#DFF5FF">
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bold mb-5 text-center">
@@ -33,12 +33,11 @@
               </v-list-item-title>
               <v-list-item-subtitle>HUMIDITY</v-list-item-subtitle>
               <v-divider></v-divider>
-              <v-list-item-title class="display-2"
-                >{{ latestHumid }}%</v-list-item-title
-              >
+              <v-list-item-title class="display-2">{{
+                latestHumid
+              }}</v-list-item-title>
               <v-list-item-subtitle class="font-weight-bold mb-1 text-center"
-                >Required : {{ humidMin }} -
-                {{ humidMax }}</v-list-item-subtitle
+                >Required : {{ humidMin }} - {{ humidMax }}</v-list-item-subtitle
               >
             </v-list-item-content>
             <v-icon class="display-3" color="blue">mdi-weather-windy</v-icon>
@@ -46,8 +45,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#86B6F6">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#DFF5FF">
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bold mb-5 text-center">
@@ -62,13 +61,13 @@
                 >Required : {{ phMin }} - {{ phMax }}</v-list-item-subtitle
               >
             </v-list-item-content>
-            <v-icon class="display-3" color="yellow">mdi-thermometer</v-icon>
+            <v-icon class="display-3" color="blue">mdi-thermometer</v-icon>
           </v-list-item>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#F3CCF3">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#DFF5FF">
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bold mb-5 text-center">
@@ -76,20 +75,20 @@
               </v-list-item-title>
               <v-list-item-subtitle>TDS</v-list-item-subtitle>
               <v-divider></v-divider>
-              <v-list-item-title class="display-2"
-                >{{ latestTds }}
-              </v-list-item-title>
+              <v-list-item-title class="display-2">{{
+                latestTds
+              }} </v-list-item-title>
               <v-list-item-subtitle class="font-weight-bold mb-1 text-center"
                 >Required : {{ tdsMin }} - {{ tdsMax }}</v-list-item-subtitle
               >
             </v-list-item-content>
-            <v-icon class="display-3" color="green">mdi-water-percent</v-icon>
+            <v-icon class="display-3" color="blue">mdi-water-percent</v-icon>
           </v-list-item>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#C6A969">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#DFF5FF">
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bold mb-5 text-center">
@@ -101,11 +100,10 @@
                 latestWaterTemp
               }}</v-list-item-title>
               <v-list-item-subtitle class="font-weight-bold mb-1 text-center"
-                >Required : {{ waterTempMin }} -
-                {{ waterTempMax }}</v-list-item-subtitle
+                >Required : {{ waterTempMin }} - {{ waterTempMax }}</v-list-item-subtitle
               >
             </v-list-item-content>
-            <v-icon class="display-3" color="red"
+            <v-icon class="display-3" color="blue"
               >mdi-temperature-celsius</v-icon
             >
           </v-list-item>
@@ -137,6 +135,7 @@ export default {
       // phReference: 0,
       // tdsReference: 0,
       // waterTempReference: 0,
+
 
       tempMin: 0,
       tempMax: 0,

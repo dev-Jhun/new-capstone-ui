@@ -1,25 +1,43 @@
 <template>
   <v-container>
+    <!-- Plant Confirmation Dialog -->
+    <v-dialog v-model="plantDialog" max-width="500">
+      <v-card>
+        <v-card-title class="headline">Confirm Plant</v-card-title>
+        <v-card-text> Are you sure you want to update this crop? </v-card-text>
+        <v-card-actions>
+          <v-btn color="green darken-1" text @click="updateItemConfirmed"
+            >Yes</v-btn
+          >
+          <v-btn color="primary" text @click="plantDialog = false">No</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-form @submit.prevent="submitForm">
       <v-row>
         <v-col cols="12" sm="6">
-          <v-text-field
-            v-model="formData.cropName"
-            label="CROP NAME"
-            required
-            outlined
-            elevation="5"
-            :rules="nameRules"
-          ></v-text-field>
+          <v-card class="pa-4" outlined elevation="5"
+            ><v-text-field
+              v-model="formData.cropName"
+              label="CROP NAME"
+              required
+              outlined
+              elevation="5"
+              :rules="nameRules"
+            ></v-text-field
+          ></v-card>
         </v-col>
         <v-col cols="12" sm="6">
-          <v-text-field
-            v-model="formData.cropVariation"
-            label="CROP VARIATION"
-            outlined
-            elevation="5"
-            :rules="nameRules"
-          ></v-text-field>
+          <v-card class="pa-4" outlined elevation="5"
+            ><v-text-field
+              v-model="formData.cropVariation"
+              label="CROP VARIATION"
+              outlined
+              elevation="5"
+              :rules="nameRules"
+            ></v-text-field
+          ></v-card>
         </v-col>
         <v-col cols="12" sm="6">
           <v-card class="pa-4" outlined elevation="5">
@@ -51,17 +69,6 @@
                   :rules="nameRules"
                 ></v-text-field>
               </v-col>
-              <!-- <v-col cols="12">
-                <v-text-field
-                  v-model="formData.cropTempRef"
-                  label="REFERENCE"
-                  required
-                  type="number"
-                  min="1"
-                  max="5"
-                  outlined
-                ></v-text-field>
-              </v-col> -->
             </v-row>
           </v-card>
         </v-col>
@@ -96,17 +103,6 @@
                   :rules="nameRules"
                 ></v-text-field>
               </v-col>
-              <!-- <v-col cols="12">
-                <v-text-field
-                  v-model="formData.cropHumidRef"
-                  label="REFERENCE"
-                  required
-                  type="number"
-                  min="1"
-                  max="100"
-                  outlined
-                ></v-text-field>
-              </v-col> -->
             </v-row>
           </v-card>
         </v-col>
@@ -141,17 +137,6 @@
                   :rules="nameRules"
                 ></v-text-field>
               </v-col>
-              <!-- <v-col cols="12">
-                <v-text-field
-                  v-model="formData.cropPhRef"
-                  label="REFERENCE"
-                  required
-                  type="number"
-                  min="1"
-                  max="14"
-                  outlined
-                ></v-text-field>
-              </v-col> -->
             </v-row>
           </v-card>
         </v-col>
@@ -186,41 +171,43 @@
                   :rules="nameRules"
                 ></v-text-field>
               </v-col>
-              <!-- <v-col cols="12">
-                <v-text-field
-                  v-model="formData.cropTdsRef"
-                  label="REFERENCE"
-                  required
-                  type="number"
-                  min="1"
-                  max="5000"
-                  outlined
-                ></v-text-field>
-              </v-col> -->
             </v-row>
           </v-card>
         </v-col>
 
-        <!-- <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6">
           <v-card class="pa-4" outlined elevation="5">
             <v-card-title class="d-flex justify-center align-center"
-              >WATER TEMPERATURE</v-card-title
+              >WATER TEMP</v-card-title
             >
             <v-row dense>
-              <v-col cols="12">
+              <v-col cols="6">
                 <v-text-field
-                  v-model="formData.cropWaterTempRef"
-                  label="REFERENCE"
+                  v-model="formData.cropWaterMin"
+                  label="MIN"
                   required
                   type="number"
                   min="1"
                   max="50"
                   outlined
+                  :rules="nameRules"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="formData.cropWaterMax"
+                  label="MAX"
+                  required
+                  type="number"
+                  min="1"
+                  max="50"
+                  outlined
+                  :rules="nameRules"
                 ></v-text-field>
               </v-col>
             </v-row>
           </v-card>
-        </v-col> -->
+        </v-col>
       </v-row>
 
       <br />
@@ -240,7 +227,7 @@
       <br />
     </v-form>
 
-    <!-- SUCCESS SNACKBAR     -->
+    <!-- SUCCESS SNACKBAR -->
     <v-snackbar color="green" v-model="successSnackbar">
       {{ textSuccess }}
       <template v-slot:action="{ attrs }">
@@ -255,7 +242,7 @@
       </template>
     </v-snackbar>
 
-    <!-- ERROR SNACKBAR     -->
+    <!-- ERROR SNACKBAR -->
     <v-snackbar color="red" v-model="errorSnackbar">
       {{ textError }}
       <template v-slot:action="{ attrs }">
@@ -266,7 +253,6 @@
     </v-snackbar>
   </v-container>
 </template>
-    
 <script>
 import firebase from "~/plugins/firebase";
 
@@ -274,48 +260,36 @@ export default {
   data() {
     return {
       formData: {
-
         cropName: "",
         cropVariation: "",
-
         cropTempMin: "",
         cropTempMax: "",
-        // cropTempRef: "",
         cropTempMist: 0,
         tempcurrent: 0,
-
         cropHumidMin: "",
         cropHumidMax: "",
-        // cropHumidRef: "",
         cropHumidMist: 0,
         humidcurrent: 0,
-
-
         cropPhMin: "",
         cropPhMax: "",
-        // cropPhRef: "",
         pumpPhHigh: 0,
         pumpPhLow: 0,
         pHcurrent: 0,
-
         cropTdsMin: "",
         cropTdsMax: "",
-        // cropTdsRef: "",
         cropTdsPumpA: 0,
         cropTdsPumpB: 0,
         tdscurrent: 0,
-
-
-        // cropWaterTempRef: "",
+        cropWaterMin: "",
+        cropWaterMax: "",
+        watercurrent: 0,
       },
       successSnackbar: false,
       errorSnackbar: false,
       textSuccess: "",
       textError: "",
-
-      nameRules: [
-        v => !!v || 'Field is required'
-      ],
+      plantDialog: false,
+      nameRules: [(v) => !!v || "Field is required"],
     };
   },
   mounted() {
@@ -333,125 +307,95 @@ export default {
           .once("value");
         const presetData = snapshot.val();
 
-        console.log("Retrieved preset data:", presetData);
-
         if (presetData) {
           this.formData = {
-
             cropName: this.trimQuotes(presetData.name),
             cropVariation: this.trimQuotes(presetData.variation),
-
             cropTempMin: this.trimQuotes(presetData.temperature?.min),
             cropTempMax: this.trimQuotes(presetData.temperature?.max),
-            // cropTempRef: this.trimQuotes(presetData.temperature?.ref),
-            cropTempMist: this.trimQuotes(presetData.temperature?.tempmist),
-            tempcurrent: this.trimQuotes(presetData.temperature?.tempcurrent),
-
+            cropTempMist: 0,
+            tempcurrent: 0,
             cropHumidMin: this.trimQuotes(presetData.humidity?.min),
             cropHumidMax: this.trimQuotes(presetData.humidity?.max),
-            // cropHumidRef: this.trimQuotes(presetData.humidity?.ref),
-            cropHumidMist: this.trimQuotes(presetData.humidity?.humidmist),
-            humidcurrent: this.trimQuotes(presetData.humidity?.humidcurrent),
-
+            cropHumidMist: 0,
+            humidcurrent: 0,
             cropPhMin: this.trimQuotes(presetData.pH?.min),
             cropPhMax: this.trimQuotes(presetData.pH?.max),
-            // cropPhRef: this.trimQuotes(presetData.pH?.ref),
-            pumpPhHigh: this.trimQuotes(presetData.pH?.pHpumpHigh),
-            pumpPhLow: this.trimQuotes(presetData.pH?.pHpumpLow),
-            pHcurrent: this.trimQuotes(presetData.pH?.pHcurrent),
-
+            pumpPhHigh: 0,
+            pumpPhLow: 0,
+            pHcurrent: 0,
             cropTdsMin: this.trimQuotes(presetData.tds?.min),
             cropTdsMax: this.trimQuotes(presetData.tds?.max),
-            // cropTdsRef: this.trimQuotes(presetData.tds?.ref),
-            cropTdsPumpA: this.trimQuotes(presetData.tds?.tdspumpA),
-            cropTdsPumpB: this.trimQuotes(presetData.tds?.tdspumpB),
-            tdscurrent: this.trimQuotes(presetData.tds?.tdscurrent),
-
-            cropWaterTempRef: this.trimQuotes(presetData.watertemp),
+            cropTdsPumpA: 0,
+            cropTdsPumpB: 0,
+            tdscurrent: 0,
+            cropWaterMin: this.trimQuotes(presetData.watertemp?.min),
+            cropWaterMax: this.trimQuotes(presetData.watertemp?.max),
+            watercurrent: 0,
           };
-
-          console.log("Form data:", this.formData);
+        } else {
+          this.textError = "No data available for this preset ID.";
+          this.errorSnackbar = true;
         }
       } catch (error) {
         console.error("Error fetching preset data:", error);
+        this.textError = "An error occurred while fetching preset data.";
+        this.errorSnackbar = true;
       }
     },
-    async submitForm() {
-      if (!this.formData.cropName || !this.formData.cropTempMin || !this.formData.cropTempMax || 
-          !this.formData.cropHumidMin || !this.formData.cropHumidMax || 
-          !this.formData.cropPhMin || !this.formData.cropPhMax || 
-          !this.formData.cropTdsMin || !this.formData.cropTdsMax) {
+    trimQuotes(str) {
+      return typeof str === "string" ? str.replace(/['"]+/g, "") : str;
+    },
+    submitForm() {
+      this.plantDialog = true;
+    },
+    async updateItemConfirmed() {
+      const presetId = this.$route.query.id;
+      if (!presetId) {
+        this.textError = "Invalid preset ID.";
         this.errorSnackbar = true;
-        this.textError = "Please fill in all required fields!";
         return;
       }
-      try {
-        const presetId = this.$route.query.id;
-        const updatedData = {
-          name: this.formData.cropName,
-          variation: this.formData.cropVariation,
-          // watertemp: this.formData.cropWaterTempRef,
-          temperature: {
-            min: this.formData.cropTempMin,
-            max: this.formData.cropTempMax,
-            // ref: this.formData.cropTempRef,
-            tempmist: this.formData.cropTempMist,
-            tempcurrent: this.formData.tempcurrent,
-          },
-          humidity: {
-            min: this.formData.cropHumidMin,
-            max: this.formData.cropHumidMax,
-            // ref: this.formData.cropHumidRef,
-            humidmist: this.formData.cropHumidMist,
-            humidcurrent: this.formData.humidcurrent,
-          },
-          pH: {
-            min: this.formData.cropPhMin,
-            max: this.formData.cropPhMax,
-            // ref: this.formData.cropPhRef,
-            pHpumpHigh: this.formData.pumpPhHigh,
-            pHpumpLow: this.formData.pumpPhLow,
-            pHcurrent: this.formData.pHcurrent,
-          },
-          tds: {
-            min: this.formData.cropTdsMin,
-            max: this.formData.cropTdsMax,
-            // ref: this.formData.cropTdsRef,
-            tdspumpA: this.formData.cropTdsPumpA,
-            tdspumpB: this.formData.cropTdsPumpB,
-            tdscurrent: this.formData.tdscurrent,
-          },
-        };
 
+      try {
         await firebase
           .database()
           .ref(`details/${presetId}`)
-          .update(updatedData);
+          .update({
+            name: this.formData.cropName,
+            variation: this.formData.cropVariation,
+            temperature: {
+              min: this.formData.cropTempMin,
+              max: this.formData.cropTempMax,
+            },
+            humidity: {
+              min: this.formData.cropHumidMin,
+              max: this.formData.cropHumidMax,
+            },
+            pH: {
+              min: this.formData.cropPhMin,
+              max: this.formData.cropPhMax,
+            },
+            tds: {
+              min: this.formData.cropTdsMin,
+              max: this.formData.cropTdsMax,
+            },
+            water: {
+              min: this.formData.cropWaterMin,
+              max: this.formData.cropWaterMax,
+            },
+          });
 
-        console.log("Data updated successfully!");
+        this.textSuccess = "Crop updated successfully!";
         this.successSnackbar = true;
-        this.textSuccess = "Presets Successfully Updated!";
-
-        setTimeout(() => {
-          this.$router.push("/table");
-        }, 2000);
+        this.plantDialog = false;
       } catch (error) {
-        console.error("Error updating data: ", error);
+        console.error("Error updating crop:", error);
+        this.textError = "An error occurred while updating the crop.";
         this.errorSnackbar = true;
-        this.textError = "Failed to update presets!";
+        this.plantDialog = false;
       }
-    },
-    trimQuotes(value) {
-      if (typeof value === 'string' || value instanceof String) {
-        return value.replace(/^"|"$/g, '');
-      } else if (value === undefined) {
-        return '';
-      }
-      return value;
     },
   },
 };
 </script>
-
-
-  

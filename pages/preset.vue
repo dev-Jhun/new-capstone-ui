@@ -1,19 +1,32 @@
 <template>
-  <v-container class="bordered-container" >
+  <v-container class="bordered-container">
+    <!-- Confirmation Dialog -->
+    <v-dialog v-model="plantDialog" max-width="500">
+      <v-card>
+        <v-card-title class="headline">Confirm Preset</v-card-title>
+        <v-card-text> Are you sure you want to add this preset? </v-card-text>
+        <v-card-actions>
+          <v-btn color="green darken-1" text @click="addPresetConfirmed"
+            >Yes</v-btn
+          >
+          <v-btn color="primary" text @click="plantDialog = false">No</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-    
-    <br>
+    <br />
     <v-row justify="center" align="center">
-      <v-btn color="blue" dark large @click="dialog = true">
+      <v-btn color="succes" dark large @click="dialog = true">
         ADD PRESET
       </v-btn>
     </v-row>
-    <br>
-    
+    <br />
 
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
-        <v-card-title class="headline">Add New Preset</v-card-title>
+        <v-card-title class="headline d-flex justify-center" r
+          >Add new preset</v-card-title
+        >
         <v-card-text>
           <v-form @submit.prevent="submitForm">
             <v-row>
@@ -178,16 +191,53 @@
                   </v-row>
                 </v-card>
               </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-card class="pa-4" outlined elevation="5">
+                  <v-card-title class="d-flex justify-center align-center">
+                    WATER TEMPERATURE
+                  </v-card-title>
+                  <v-row dense>
+                    <v-col cols="6">
+                      <v-text-field
+                        v-model="formData.cropWaterMin"
+                        label="MIN"
+                        required
+                        type="number"
+                        min="1"
+                        max="5000"
+                        outlined
+                        :rules="nameRules"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                      <v-text-field
+                        v-model="formData.cropWaterMax"
+                        label="MAX"
+                        required
+                        type="number"
+                        min="1"
+                        max="5000"
+                        outlined
+                        :rules="nameRules"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-col>
             </v-row>
             <br /><br />
 
             <v-row>
-              <v-spacer></v-spacer>
               <v-col>
-                <v-spacer></v-spacer>
                 <v-row justify="center" align="center">
                   <v-col cols="auto">
-                    <v-btn type="submit" color="green" dark large>
+                    <v-btn
+                      @click="openConfirmationDialog"
+                      color="green"
+                      dark
+                      large
+                    >
                       SAVE PRESET
                     </v-btn>
                   </v-col>
@@ -198,7 +248,6 @@
                   </v-col>
                 </v-row>
               </v-col>
-              <v-spacer></v-spacer>
             </v-row>
             <br /><br /><br />
           </v-form>
@@ -206,182 +255,89 @@
       </v-card>
     </v-dialog>
 
-    
+    <br />
 
-    <br>
+    <v-card elevation="6">
+      <v-card-title>
+        Crop Information
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table :headers="headers" :items="items" :search="search">
+        <template v-slot:body="{ items }">
+          <tbody>
+            <tr v-for="item in items" :key="item.id">
+              <td>{{ item.cropName }}</td>
+              <td>{{ item.cropVariation }}</td>
+              <td>{{ item.mintemp }} - {{ item.maxtemp }}</td>
+              <td>{{ item.minhumid }} - {{ item.maxhumid }}</td>
+              <td>{{ item.minph }} - {{ item.maxph }}</td>
+              <td>{{ item.mintds }} - {{ item.maxtds }}</td>
+              <td>{{ item.minWaterTemp }} - {{ item.maxWaterTemp }}</td>
+              <td>
+                <v-btn color="primary" @click="viewItem(item)"> View </v-btn>
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-data-table>
 
-    <v-data-iterator
-      :items="items"
-      :items-per-page.sync="itemsPerPage"
-      :page.sync="page"
-      :search="search"
-      :sort-by="sortBy.toLowerCase()"
-      :sort-desc="sortDesc"
-      hide-default-footer
-    >
-      <template v-slot:header>
-        <v-toolbar
-          dark
-          color="blue darken-3"
-          class="mb-1"
-        >
-          <v-text-field
-            v-model="search"
-            clearable
-            flat
-            solo-inverted
-            hide-details
-            prepend-inner-icon="mdi-magnify"
-            label="Search"
-          ></v-text-field>
-          <template v-if="$vuetify.breakpoint.mdAndUp">
-            <v-spacer></v-spacer>
-            <v-select
-              v-model="sortBy"
-              flat
-              solo-inverted
-              hide-details
-              :items="keys"
-              prepend-inner-icon="mdi-magnify"
-              label="Sort by"
-            ></v-select>
-            <v-spacer></v-spacer>
-            <v-btn-toggle
-              v-model="sortDesc"
-              mandatory
+      <v-dialog v-model="dialogItem" max-width="600px">
+        <v-card>
+          <v-card-title>
+            <span class="headline"
+              >{{ selectedItem.cropName }} -
+              {{ selectedItem.cropVariation }}</span
             >
-              <v-btn
-                large
-                depressed
-                color="blue"
-                :value="false"
-              >
-                <v-icon>mdi-arrow-up</v-icon>
-              </v-btn>
-              <v-btn
-                large
-                depressed
-                color="blue"
-                :value="true"
-              >
-                <v-icon>mdi-arrow-down</v-icon>
-              </v-btn>
-            </v-btn-toggle>
-          </template>
-        </v-toolbar>
-      </template>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-img :src="selectedItem.image" aspect-ratio="1"></v-img>
+                </v-col>
+                <v-col cols="12">
+                  <p>{{ selectedItem.description }}</p>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="savePresetFromTable" color="success">
+              SAVE PRESET
+            </v-btn>
 
-      <template v-slot:default="props">
-        <v-row>
-          <v-col
-            v-for="item in props.items"
-            :key="item.name"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-          >
-            <v-card>
-              <v-card-title class="subheading font-weight-bold">
-                {{ item.name }}
-              </v-card-title>
-
-              <v-divider></v-divider>
-
-              <v-list dense>
-                <v-list-item
-                  v-for="(key, index) in filteredKeys"
-                  :key="index"
-                >
-                  <v-list-item-content :class="{ 'blue--text': sortBy === key }">
-                    {{ key }}:
-                  </v-list-item-content>
-                  <v-list-item-content
-                    class="align-end"
-                    :class="{ 'blue--text': sortBy === key }"
-                  >
-                    {{ item[key.toLowerCase()] }}
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-card>
-          </v-col>
-        </v-row>
-      </template>
-
-      <template v-slot:footer>
-        <v-row
-          class="mt-2"
-          align="center"
-          justify="center"
-        >
-          <span class="grey--text">Items per page</span>
-          <v-menu offset-y>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                dark
-                text
-                color="primary"
-                class="ml-2"
-                v-bind="attrs"
-                v-on="on"
-              >
-                {{ itemsPerPage }}
-                <v-icon>mdi-chevron-down</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                v-for="(number, index) in itemsPerPageArray"
-                :key="index"
-                @click="updateItemsPerPage(number)"
-              >
-                <v-list-item-title>{{ number }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
-          <v-spacer></v-spacer>
-
-          <span
-            class="mr-4
-            grey--text"
-          >
-            Page {{ page }} of {{ numberOfPages }}
-          </span>
-          <v-btn
-            fab
-            dark
-            color="blue darken-3"
-            class="mr-1"
-            @click="formerPage"
-          >
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-          <v-btn
-            fab
-            dark
-            color="blue darken-3"
-            class="ml-1"
-            @click="nextPage"
-          >
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </v-row>
-      </template>
-    </v-data-iterator>
-
+            <v-btn color="error darken-1" @click="dialogItem = false"
+              >Close</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-card>
     <br>
     <br>
     <br>
     <br>
-    <v-row>
-      <v-card>
-        <p>hellooooooooooo</p>
-      </v-card>
-    </v-row>
+   
 
-    
+    <h3>This is a brief explanation of the basic values, nutrients, and temperature required for crop planting in hydroponics farming.</h3>
+    <br>
+
+    <p style="text-align:justify; text-indent:40px">Hydroponics is a growing technology that has been widely used in agriculture worldwide. It involves the use of hydroponic systems to grow crops, which are designed to maintain optimal environmental conditions such as temperature, humidity, and nutrient levels. This is particularly important in tropical climates where temperatures can be high. Samarakoon and Weerasinghe emphasize the importance of managing the production environment to maximize crop yield and quality. They suggest that hydroponic growers can create a conducive environment for sustained crop growth and mitigate potential challenges associated with tropical climates. The Food and Agriculture Organization (FAO) emphasizes the importance of nutrient management, environmental control, and crop selection for optimizing hydroponic systems' performance. Rodriguez-Delfin's 2008 study on hydroponic cultivation in Peru provides valuable insights into the practical application of hydroponics in tropical settings. This research serves as a reference for hydroponic growers in similar environments, enabling them to make informed decisions regarding crop selection and cultivation practices to maximize yield and profitability.</p>
+
+    <h4>Reference:</h4>
+
+    <p>https://generalhydroponics.com/resources/flora-series-feedcharts/</p>
+    <p>https://aggie-hort.tamu.edu/greenhouse/hydroponics/solutions.html</p>
+   
 
     <!-- SUCCESS SNACKBAR     -->
     <v-snackbar color="green" v-model="successSnackbar">
@@ -438,6 +394,10 @@ export default {
         cropTdsMin: "",
         cropTdsMax: "",
 
+        watercurrent: 0,
+        cropWaterMin: "",
+        cropWaterMax: "",
+
         mistTemp: "0",
         mistHumid: "0",
         pumpPhLow: "0",
@@ -450,149 +410,209 @@ export default {
       textSuccess: "",
       textError: "",
 
-      nameRules: [
-        (v) => !!v || "Field is required",
+      nameRules: [(v) => !!v || "Field is required"],
+
+      plantDialog: false,
+
+      search: "",
+      dialogItem: false,
+      selectedItem: {},
+      headers: [
+        { text: "Crop Name", value: "cropName" },
+        { text: "Crop Variation", value: "cropVariation" },
+        { text: "Temperature", value: "temperature" },
+        { text: "Humidity", value: "humidity" },
+        { text: "pH", value: "ph" },
+        { text: "TDS", value: "tds" },
+        { text: "Water Temp", value: "waterTemp" },
+        { text: "Actions", value: "actions", sortable: false },
+      ],
+      items: [
+        {
+          id: 1,
+          cropName: "Lettuce",
+          cropVariation: "Dabi",
+          mintemp: "15",
+          maxtemp: "20",
+          minhumid: "60",
+          maxhumid: "80",
+          minph: "5.5",
+          maxph: "6.5",
+          mintds: "700",
+          maxtds: "900",
+          minWaterTemp: "20",
+          maxWaterTemp: "25",
+          image: "/lettuce-dabi.jpg",
+          description:
+            "Dabi is a curly lettuce, Lollo Green type, fast growing and resistant to aphids. Salad is large, with fine light green leaves. It is recommended for spring and autumn crops.",
+        },
+        {
+          id: 2,
+          cropName: "Lettuce",
+          cropVariation: "Romaine",
+          mintemp: "15",
+          maxtemp: "24",
+          minhumid: "50",
+          maxhumid: "70",
+          minph: "5.5",
+          maxph: "6.5",
+          mintds: "560",
+          maxtds: "840",
+          minWaterTemp: "20",
+          maxWaterTemp: "24",
+          image: "/lettuce-romaine.jpg",
+          description:
+            "Romaine lettuce leaves are long and taper toward the root of the lettuce. The upper part of the leaves is a deeper green color and more flimsy than the lower leaves. Toward the bottom of the lettuce, the leaves become sturdier and have thick, white ribs that contain a slightly bitter fluid.",
+        },
+        {
+          id: 3,
+          cropName: "Lettuce",
+          cropVariation: "Butterhead",
+          mintemp: "15",
+          maxtemp: "24",
+          minhumid: "50",
+          maxhumid: "70",
+          minph: "5.5",
+          maxph: "6.5",
+          mintds: "560",
+          maxtds: "840",
+          minWaterTemp: "20",
+          maxWaterTemp: "24",
+          image: "/lettuce-butterhead.jpeg",
+          description: "Butterhead lettuce is a variety of lettuce known for its loose, round-shaped heads with tender, buttery-textured leaves. It's characterized by its soft, buttery taste and delicate texture, making it a popular choice for salads and sandwiches. The leaves of butterhead lettuce are typically pale green to yellow-green in color and have a mild, slightly sweet flavor.",
+        },
+        {
+          id: 4,
+          cropName: "Spinach",
+          cropVariation: "Savoy",
+          mintemp: "16",
+          maxtemp: "24",
+          minhumid: "70",
+          maxhumid: "80",
+          minph: "6.0",
+          maxph: "7.0",
+          mintds: "1050",
+          maxtds: "1400",
+          minWaterTemp: "18",
+          maxWaterTemp: "24",
+          image: "/spinach-savoy.jpg",
+          description: "Savoy spinach, also known as curly spinach, is a type of spinach that is unique for its crinkled, curly leaves. This variety of spinach is popular in Mediterranean cuisine and is used in a variety of dishes from salads to soups.",
+        },
+        {
+          id: 5,
+          cropName: "Basil",
+          cropVariation: "Sweet",
+          mintemp: "18",
+          maxtemp: "30",
+          minhumid: "60",
+          maxhumid: "80",
+          minph: "5.5",
+          maxph: "6.5",
+          mintds: "700",
+          maxtds: "1120",
+          minWaterTemp: "22",
+          maxWaterTemp: "25",
+          image: "/basil-sweet.jpg",
+          description: "also called common basil, is the most common and well-known variety of basil. sweet basil plants grow upright and can reach up to 2 feet in height. Small white flowers may bloom if the plant is allowed to bolt. This type of basil has a versatile sweet flavor that is perfect for many culinary uses. It works well in Italian dishes, pesto, salad dressings, sandwiches, and more. Sweet basil also pairs nicely with tomatoes, garlic, and mozzarella.",
+        },
+        {
+          id: 6,
+          cropName: "Kale",
+          cropVariation: "Curly",
+          mintemp: "18",
+          maxtemp: "24",
+          minhumid: "50",
+          maxhumid: "60",
+          minph: "5.5",
+          maxph: "6.5",
+          mintds: "1050",
+          maxtds: "1400",
+          minWaterTemp: "18",
+          maxWaterTemp: "24",
+          image: "/kale-curly.png",
+          description: "This is the type of kale you usually see in the grocery store. It’s a pale to deep green with large, frilly-edged leaves and long stems. It’s often sold as loose leaves bound together, even though it grows as a loose head.",
+        },
+        {
+          id: 7,
+          cropName: "Tomatoes",
+          cropVariation: "Cherry",
+          mintemp: "18",
+          maxtemp: "25",
+          minhumid: "70",
+          maxhumid: "80",
+          minph: "5.5",
+          maxph: "6.5",
+          mintds: "1400",
+          maxtds: "3500",
+          minWaterTemp: "20",
+          maxWaterTemp: "25",
+          image: "/tomatoes-cherry.jpg",
+          description: "Cherry tomatoes are a small variety of tomato that is named for its shape which resembles a cherry. Sometimes sold on the vine, the vegetable can range from a little smaller than a cherry to about twice the size, and can be red (the most common color), yellow, orange, green, or almost black. These tomatoes are prized by chefs for their juiciness and thin skin, which causes the fruits to pop in your mouth when eaten. Like all tomatoes, cherry tomatoes are best in the summer, but because of their small size, they can also be grown in a greenhouse while still maintaining much of their flavor and texture.",
+        },
+        {
+          id: 8,
+          cropName: "Cucumbers",
+          cropVariation: "Slicing",
+          mintemp: "18",
+          maxtemp: "24",
+          minhumid: "70",
+          maxhumid: "90",
+          minph: "5.5",
+          maxph: "6.0",
+          mintds: "1190",
+          maxtds: "1750",
+          minWaterTemp: "20",
+          maxWaterTemp: "24",
+          image: "/cucumbers-slicing.jpg",
+          description: "A slicing cucumber is a variety of cucumber that is typically longer and has a thinner skin. It is commonly used in salads, sandwiches, and as a refreshing snack due to its crisp texture and mild flavor.",
+        },
+        {
+          id: 9,
+          cropName: "Bell Peppers",
+          cropVariation: "Green",
+          mintemp: "20",
+          maxtemp: "25",
+          minhumid: "60",
+          maxhumid: "70",
+          minph: "6.0",
+          maxph: "6.5",
+          mintds: "1400",
+          maxtds: "3500",
+          minWaterTemp: "20",
+          maxWaterTemp: "25",
+          image: "/bellpepper-green.jpeg",
+          description: "Bell peppers (Capsicum annuum) are berries by botanical classification but are used mostly as culinary vegetables or culinary ingredients, just like tomatoes. The fact that they are produced from a flowering plant and contain seeds makes them fruits, technically speaking. These fruits or peppers are shaped like bells and are usually three to six inches long. They have thick flesh that is juicy and crunchy when eaten raw.",
+        },
+        {
+          id: 10,
+          cropName: "Peppermint",
+          cropVariation: "Mint",
+          mintemp: "18",
+          maxtemp: "24",
+          minhumid: "60",
+          maxhumid: "70",
+          minph: "5.5",
+          maxph: "6.0",
+          mintds: "1260",
+          maxtds: "1610",
+          minWaterTemp: "18",
+          maxWaterTemp: "22",
+          image: "/peppermint-mint.jpg",
+          description: "Peppermint, (Mentha ×piperita), strongly aromatic perennial herb of the mint family (Lamiaceae). Peppermint has a strong sweetish odour and a warm pungent taste with a cooling aftertaste. The leaves are typically used fresh as a culinary herb, and the flowers are dried and used to flavour candy, desserts, beverages, salads, and other foods.",
+        },
       ],
 
-
-
-      itemsPerPageArray: [4, 8, 12],
-        search: '',
-        filter: {},
-        sortDesc: false,
-        page: 1,
-        itemsPerPage: 4,
-        sortBy: 'name',
-        keys: [
-          'Name',
-          'Variation',
-          'Required Temp',
-          'Required Humid',
-          'Required pH',
-          'Required TDS',
-          'Required Water Temp',
-        ],
-        items: [
-          {
-            name: 'Lettuce',
-            variation: "Dabi",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-          {
-            name: 'Lettuce',
-            variation: "Romaine",
-            temp: "25-28",
-            humid: "50-55",
-            ph: "4-7",
-            tds: "700-800",
-            waterTemp: "25-28",
-          },
-        ],
-
+      savedPresets: [], // Array to store saved presets
     };
   },
   computed: {
-      numberOfPages () {
-        return Math.ceil(this.items.length / this.itemsPerPage)
-      },
-      filteredKeys () {
-        return this.keys.filter(key => key !== 'Name')
-      },
+    numberOfPages() {
+      return Math.ceil(this.items.length / this.itemsPerPage);
     },
+    filteredKeys() {
+      return this.keys.filter((key) => key !== "Name");
+    },
+  },
   mounted() {
     // Fetch preset data based on preset ID from Firebase
     // const presetId = this.$route.query.id;
@@ -601,16 +621,36 @@ export default {
     // }
   },
   methods: {
+    viewItem(item) {
+      this.selectedItem = item;
+      this.dialogItem = true;
+    },
 
-    nextPage () {
-        if (this.page + 1 <= this.numberOfPages) this.page += 1
-      },
-      formerPage () {
-        if (this.page - 1 >= 1) this.page -= 1
-      },
-      updateItemsPerPage (number) {
-        this.itemsPerPage = number
-      },
+    async savePresetFromTable() {
+      if (!this.selectedItem) {
+        this.errorSnackbar = true;
+        this.textError = "No item selected!";
+        return;
+      }
+
+      // Populate form fields with selected item's data
+      this.formData.cropName = this.selectedItem.cropName;
+      this.formData.cropVariation = this.selectedItem.cropVariation;
+      this.formData.cropTempMin = this.selectedItem.mintemp;
+      this.formData.cropTempMax = this.selectedItem.maxtemp;
+      this.formData.cropHumidMin = this.selectedItem.minhumid;
+      this.formData.cropHumidMax = this.selectedItem.maxhumid;
+      this.formData.cropPhMin = this.selectedItem.minph;
+      this.formData.cropPhMax = this.selectedItem.maxph;
+      this.formData.cropTdsMin = this.selectedItem.mintds;
+      this.formData.cropTdsMax = this.selectedItem.maxtds;
+      this.formData.cropWaterMin = this.selectedItem.minWaterTemp;
+      this.formData.cropWaterMax = this.selectedItem.maxWaterTemp;
+
+      // Open the dialog
+      this.dialog = true;
+    },
+
     // async fetchPresetData(presetId) {
     //   try {
     //     // Retrieve preset data from Firebase based on preset ID
@@ -640,6 +680,27 @@ export default {
     //     // Optionally, display an error message to the user
     //   }
     // },
+
+    openConfirmationDialog() {
+      // Open the confirmation dialog
+      this.plantDialog = true;
+    },
+
+    async addPresetConfirmed() {
+      try {
+        // Call the submitForm method to add the preset
+        await this.submitForm();
+
+        // Close the dialog after successful submission
+        this.plantDialog = false;
+      } catch (error) {
+        console.error("Error adding preset: ", error);
+        // Optionally, display an error message to the user
+        // Close the dialog in case of an error
+        this.plantDialog = false;
+      }
+    },
+
     async submitForm() {
       if (
         !this.formData.cropName ||
@@ -650,7 +711,9 @@ export default {
         !this.formData.cropPhMin ||
         !this.formData.cropPhMax ||
         !this.formData.cropTdsMin ||
-        !this.formData.cropTdsMax
+        !this.formData.cropTdsMax ||
+        !this.formData.cropWaterMin ||
+        !this.formData.cropWaterMax
       ) {
         this.errorSnackbar = true;
         this.textError = "Please fill in all required fields!";
@@ -695,6 +758,11 @@ export default {
             tdspumpB: this.formData.pumpTdsB,
             tdscurrent: this.formData.tdscurrent,
           },
+          watertemp: {
+            min: this.formData.cropWaterMin,
+            max: this.formData.cropWaterMax,
+            watercurrent: this.formData.watercurrent,
+          },
         };
 
         // Save the entire crop data object at once
@@ -718,6 +786,12 @@ export default {
 .bordered-container {
   padding: 20px; /* Add padding to give some space between content and border */
   border-radius: 2px;
-  background-color: #DDE6ED;
+  /* background-color: #DD
+  E6ED; */
+  
+}
+
+h3{
+  text-align:center;
 }
 </style>

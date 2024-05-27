@@ -106,6 +106,11 @@ export default {
           title: "Presets",
           to: "/preset",
         },
+        // {
+        //   icon: "mdi-wrench",
+        //   title: "Sample",
+        //   to: "/sample",
+        // },
       //  {
       //     icon: "mdi-information",
       //     title: "Crop Page",
@@ -138,3 +143,4 @@ export default {
   background: #232d3f;
 }
 </style>
+

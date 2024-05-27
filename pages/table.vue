@@ -6,7 +6,9 @@
         <v-card-title class="headline">Confirm Delete</v-card-title>
         <v-card-text> Are you sure you want to delete this item? </v-card-text>
         <v-card-actions>
-          <v-btn color="red darken-1" text @click="deleteItemConfirmed">Yes</v-btn>
+          <v-btn color="red darken-1" text @click="deleteItemConfirmed"
+            >Yes</v-btn
+          >
           <v-btn color="primary" text @click="deleteDialog = false">No</v-btn>
         </v-card-actions>
       </v-card>
@@ -18,7 +20,9 @@
         <v-card-title class="headline">Confirm Plant</v-card-title>
         <v-card-text> Are you sure you want to plant this crop? </v-card-text>
         <v-card-actions>
-          <v-btn color="green darken-1" text @click="plantItemConfirmed">Yes</v-btn>
+          <v-btn color="green darken-1" text @click="plantItemConfirmed"
+            >Yes</v-btn
+          >
           <v-btn color="primary" text @click="plantDialog = false">No</v-btn>
         </v-card-actions>
       </v-card>
@@ -30,9 +34,8 @@
       </v-card-title>
 
       <v-tabs v-model="tab" grow background-color="transparent" color="basil">
-        <v-tab class="custom-tab">Preset Table</v-tab>
+        <v-tab class="custom-tab" color>Preset Table</v-tab>
         <v-tab class="custom-tab">Planted Crop</v-tab>
-
         <v-tabs-items v-model="tab">
           <v-tab-item>
             <v-card flat color="basil">
@@ -41,9 +44,21 @@
                 :items="items"
                 :items-per-page="10"
                 class="elevation-1"
+                :search="search"
               >
                 <template v-slot:top>
-                  <v-toolbar flat></v-toolbar>
+                  <v-toolbar flat>
+                    <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field
+                    
+                  ></v-toolbar>
                 </template>
                 <template v-slot:item="{ item }">
                   <tr>
@@ -53,11 +68,21 @@
                     <td>{{ item.minhumid }} - {{ item.maxhumid }}</td>
                     <td>{{ item.minph }} - {{ item.maxph }}</td>
                     <td>{{ item.mintds }} - {{ item.maxtds }}</td>
+                    <td>{{ item.minwater }} - {{ item.maxwater }}</td>
                     <td>
                       <v-spacer></v-spacer>
-                      <v-btn color="green" @click="showPlantDialog(item)" dark :disabled="isCropPlanted(item)">Plant</v-btn>
-                      <v-btn color="primary" @click="editItem(item)">Edit</v-btn>
-                      <v-btn color="error" @click="showDeleteDialog(item)">Delete</v-btn>
+                      <v-btn
+                        color="success"
+                        @click="showPlantDialog(item)"
+                        :disabled="isCropPlanted(item)"
+                        >Plant</v-btn
+                      >
+                      <v-btn color="primary" @click="editItem(item)"
+                        >Edit</v-btn
+                      >
+                      <v-btn color="error" @click="showDeleteDialog(item)"
+                        >Delete</v-btn
+                      >
                     </td>
                   </tr>
                 </template>
@@ -84,8 +109,11 @@
                     <td>{{ item.humidmin }} - {{ item.humidmax }}</td>
                     <td>{{ item.pHmin }} - {{ item.pHmax }}</td>
                     <td>{{ item.tdsmin }} - {{ item.tdsmax }}</td>
+                    <td>{{ item.watermin }} - {{ item.watermax }}</td>
                     <td>
-                      <v-btn color="error" @click="showDeleteDialog(item)">Delete</v-btn>
+                      <v-btn color="error" @click="showDeleteDialog(item)"
+                        >Delete</v-btn
+                      >
                     </td>
                   </tr>
                 </template>
@@ -100,7 +128,13 @@
     <v-snackbar color="green" v-model="successSnackbar">
       {{ textSuccess }}
       <template v-slot:action="{ attrs }">
-        <v-btn plain color="white" v-bind="attrs" @click="successSnackbar = false">Close</v-btn>
+        <v-btn
+          plain
+          color="white"
+          v-bind="attrs"
+          @click="successSnackbar = false"
+          >Close</v-btn
+        >
       </template>
     </v-snackbar>
 
@@ -108,7 +142,9 @@
     <v-snackbar color="red" v-model="errorSnackbar">
       {{ textError }}
       <template v-slot:action="{ attrs }">
-        <v-btn color="white" text v-bind="attrs" @click="errorSnackbar = false">Close</v-btn>
+        <v-btn color="white" text v-bind="attrs" @click="errorSnackbar = false"
+          >Close</v-btn
+        >
       </template>
     </v-snackbar>
   </v-container>
@@ -127,6 +163,7 @@ export default {
         { text: "Required Humidity", value: "cropHumidRef" },
         { text: "Required Ph Level", value: "cropPhRef" },
         { text: "Required Tds Level", value: "cropTdsRef" },
+        { text: "Required Water Temp", value: "cropWaterRef" },
         { text: "Actions", sortable: false },
       ],
       plantedHeaders: [
@@ -136,6 +173,7 @@ export default {
         { text: "Humidity", value: "humidmin" },
         { text: "Ph Level", value: "pHmin" },
         { text: "Tds Level", value: "tdsmin" },
+        { text: "Water Temp", value: "watermin" },
         { text: "Actions", sortable: false },
       ],
       items: [],
@@ -148,6 +186,7 @@ export default {
       errorSnackbar: false,
       textSuccess: "",
       textError: "",
+      search: "",
     };
   },
 
@@ -174,6 +213,8 @@ export default {
               maxph: childSnapshot.val().pH.max,
               mintds: childSnapshot.val().tds.min,
               maxtds: childSnapshot.val().tds.max,
+              minwater: childSnapshot.val().watertemp.min,
+              maxwater: childSnapshot.val().watertemp.max,
               id: childSnapshot.key,
             };
             this.items.push(item);
@@ -199,6 +240,8 @@ export default {
               pHmax: plantedData.ph.pHmax,
               tdsmin: plantedData.tds.tdsmin,
               tdsmax: plantedData.tds.tdsmax,
+              watermin: plantedData.watertemp.watermin,
+              watermax: plantedData.watertemp.watermax,
             };
             this.plantedItems = [plantedItems]; // Ensure only one item is in the list
           }
@@ -218,45 +261,45 @@ export default {
       this.deleteDialog = true;
 
       // Dashboard planted
-      
-         Promise.all([
-          firebase.database().ref("crop").set({
-            name: "",
-            variation: "",
-          }),
-          firebase.database().ref("humid").set({
-            humidmin: 0,
-            humidmax: 0,
-            humidcurrent: 0,
-            humidmist: "0",
-          }),
-          firebase.database().ref("ph").set({
-            pHmin: 0,
-            pHmax: 0,
-            pHcurrent: 0,
-            pHpumpHigh: "0",
-            pHpumpLow: "0",
-          }),
-          firebase.database().ref("tds").set({
-            tdsmin: 0,
-            tdsmax: 0,
-            tdspumpA: "0",
-            tdspumpB: "0",
-            tdscurrent: 0,
-            tdswaterpump: "0",
-          }),
-          firebase.database().ref("temp").set({
-            tempmin: 0,
-            tempmax: 0,
-            tempcurrent: 0,
-            tempmist: "0",
-          }),
-          firebase.database().ref("watertemp").set({
-            watercurrent: 0,
-            watermax: "0",
-            watermin: "0",
-          }),
-        ]);
+
+      Promise.all([
+        firebase.database().ref("crop").set({
+          name: "",
+          variation: "",
+        }),
+        firebase.database().ref("humid").set({
+          humidmin: 0,
+          humidmax: 0,
+          humidcurrent: 0,
+          humidmist: "0",
+        }),
+        firebase.database().ref("ph").set({
+          pHmin: 0,
+          pHmax: 0,
+          pHcurrent: 0,
+          pHpumpHigh: "0",
+          pHpumpLow: "0",
+        }),
+        firebase.database().ref("tds").set({
+          tdsmin: 0,
+          tdsmax: 0,
+          tdspumpA: "0",
+          tdspumpB: "0",
+          tdscurrent: 0,
+          tdswaterpump: "0",
+        }),
+        firebase.database().ref("temp").set({
+          tempmin: 0,
+          tempmax: 0,
+          tempcurrent: 0,
+          tempmist: "0",
+        }),
+        firebase.database().ref("watertemp").set({
+          watercurrent: 0,
+          watermax: "0",
+          watermin: "0",
+        }),
+      ]);
     },
 
     async deleteItemConfirmed() {
@@ -297,6 +340,8 @@ export default {
           maxtds,
           mintemp,
           maxtemp,
+          minwater,
+          maxwater,
         } = this.plantItem;
 
         // Clear existing planted data
@@ -323,6 +368,10 @@ export default {
           firebase.database().ref("planted/temp").set({
             tempmin: mintemp,
             tempmax: maxtemp,
+          }),
+          firebase.database().ref("planted/watertemp").set({
+            watermin: minwater,
+            watermax: maxwater,
           }),
         ]);
 
@@ -373,8 +422,8 @@ export default {
           }),
           firebase.database().ref("watertemp").set({
             watercurrent: 0,
-            watermax: "0",
-            watermin: "0",
+            watermax: this.plantItem.maxwater,
+            watermin: this.plantItem.minwater,
           }),
         ]);
 
@@ -387,15 +436,14 @@ export default {
       }
     },
 
-
-
     isCropPlanted(item) {
       // Check if the item exists in the planted items list
-      return this.plantedItems.some(plantedItem => plantedItem.name === item.cropName && plantedItem.variation === item.cropVariation);
-    }
-
-
-
+      return this.plantedItems.some(
+        (plantedItem) =>
+          plantedItem.name === item.cropName &&
+          plantedItem.variation === item.cropVariation
+      );
+    },
   },
 };
 </script>

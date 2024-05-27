@@ -355,25 +355,37 @@ export default {
   },
 
   mounted() {
+
+    firebase
+      .database()
+      .ref("mode/auto")
+      .once("value", (snapshot) => {
+        const modeValue = snapshot.val();
+        if (modeValue !== null) {
+          this.autoMode = modeValue === "1";
+        }
+      });
+
+
     // Firebase listeners to update sensor values in real-time
     firebase.database().ref("temp/tempcurrent").on("value", (snapshot) => {
       this.latestTemp = snapshot.val();
     });
 
     firebase.database().ref("humid/humidcurrent").on("value", (snapshot) => {
-      this.latestHumid = snapshot.val();
+      this.latestHumid =  snapshot.val();
     });
 
     firebase.database().ref("ph/pHcurrent").on("value", (snapshot) => {
-      this.latestPh = snapshot.val();
+      this.latestPh =  parseFloat(snapshot.val()).toFixed(1);
     });
 
     firebase.database().ref("tds/tdscurrent").on("value", (snapshot) => {
-      this.latestTds = snapshot.val();
+      this.latestTds =  parseFloat(snapshot.val()).toFixed(1);
     });
 
     firebase.database().ref("watertemp/watercurrent").on("value", (snapshot) => {
-      this.latestWaterTemp = snapshot.val();
+      this.latestWaterTemp =  parseFloat(snapshot.val()).toFixed(1);
     });
 
 

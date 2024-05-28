@@ -10,13 +10,13 @@ const config = {
   // storageBucket: "smarthydroponics-40d1f.appspot.com",
   // messagingSenderId: "817281014244",
   // appId: "1:817281014244:web:56911ac4f1b5114d914ff1",
-  apiKey: "AIzaSyCzfx0X_TYCJAeDC38KFN448ndICzRtCug",
-  authDomain: "smarthydroponics-3a31d.firebaseapp.com",
-  databaseURL: "https://smarthydroponics-3a31d-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "smarthydroponics-3a31d",
-  storageBucket: "smarthydroponics-3a31d.appspot.com",
-  messagingSenderId: "732433331388",
-  appId: "1:732433331388:web:c1851e887ba4f049ac0cb9"
+  apiKey: "AIzaSyACOIdJxX5kxPOjR4ihE1rXIWrGvAZ_85k",
+  authDomain: "smarthydroponics-2458a.firebaseapp.com",
+  databaseURL: "https://smarthydroponics-2458a-default-rtdb.firebaseio.com",
+  projectId: "smarthydroponics-2458a",
+  storageBucket: "smarthydroponics-2458a.appspot.com",
+  messagingSenderId: "123807413870",
+  appId: "1:123807413870:web:d1b4d391c2a2cc4517d87f"
 };
 
 if (!firebase.apps.length) {

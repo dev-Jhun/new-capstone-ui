@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card color="#CDE8E5" elevation="2" class="switch-card" light>
+        <v-card color="#DFF5FF" elevation="2" class="switch-card" light>
           <!-- Switch to toggle mode -->
           <v-row justify="center">
             <v-col cols="auto">
@@ -19,7 +19,7 @@
       </v-col>
 
       <v-col cols="12" md="4" sm="6">
-        <v-card color="#F2F597" class="pa-4" style="height:332px">
+        <v-card color="#DFF5FF" class="pa-4" style="height:332px">
           <v-card-title class="d-flex justify-center">
             MISTING
           </v-card-title>
@@ -51,7 +51,7 @@
       </v-col>
 
       <v-col cols="12" md="4" sm="6">
-        <v-card color="#86B6F6" class="pa-4">
+        <v-card color="#DFF5FF" class="pa-4">
           <v-card-title class="d-flex justify-center"> PH PUMPS </v-card-title>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
@@ -80,7 +80,7 @@
       </v-col>
 
       <v-col cols="12" md="4" sm="6">
-        <v-card color="#F3CCF3" class="pa-4">
+        <v-card color="#DFF5FF" class="pa-4">
           <v-card-title class="d-flex justify-center"> TDS PUMPS </v-card-title>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
@@ -109,7 +109,7 @@
       </v-col>
 
       <v-col cols="12" md="4" sm="6">
-        <v-card color="#FDE49E" class="pa-4">
+        <v-card color="#DFF5FF" class="pa-4">
           <v-card-title class="d-flex justify-center">
             WATER PUMP
           </v-card-title>

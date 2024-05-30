@@ -1,5 +1,35 @@
 <template>
-  <v-container class="bordered-container">
+  <v-container fluid>
+    <!-- Edit Confirmation Dialog -->
+    <v-dialog v-model="editConfirmationDialog" max-width="500">
+      <v-card>
+        <v-card-title class="headline">Confirm Save</v-card-title>
+        <v-card-text>Are you sure you want to save the changes?</v-card-text>
+        <v-card-actions>
+          <v-btn color="green darken-1" text @click="saveEditedPreset"
+            >Yes</v-btn
+          >
+          <v-btn color="primary" text @click="editConfirmationDialog = false"
+            >No</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Plant Confirmation Dialog -->
+    <v-dialog v-model="plantCrop" max-width="500">
+      <v-card>
+        <v-card-title class="headline">Confirm Plant</v-card-title>
+        <v-card-text> Are you sure you want to plant this crop? </v-card-text>
+        <v-card-actions>
+          <v-btn color="green darken-1" text @click="plantItemConfirmed"
+            >Yes</v-btn
+          >
+          <v-btn color="primary" text @click="plantCrop = false">No</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- Confirmation Dialog -->
     <v-dialog v-model="plantDialog" max-width="500">
       <v-card>
@@ -14,18 +44,226 @@
       </v-card>
     </v-dialog>
 
+    <!-- delete confirmation dialog -->
+    <v-dialog v-model="deleteConfirmationDialog" max-width="500">
+      <v-card>
+        <v-card-title class="headline">Delete Confirmation</v-card-title>
+        <v-card-text>
+          Are you sure you want to delete this preset?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="error" text @click="deletePresetConfirmed">Yes</v-btn>
+          <v-btn color="primary" text @click="deleteConfirmationDialog = false"
+            >No</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Edit Dialog -->
+    <v-dialog v-model="editDialog" max-width="1200">
+      <v-card>
+        <v-card-title class="headline d-flex justify-center"
+          >Edit Preset</v-card-title
+        >
+        <v-card-text>
+          <br />
+          <v-form @submit.prevent="saveEditedPreset">
+            <!-- Crop Information -->
+            <v-row>
+              <!-- Image -->
+              <v-col cols="12" md="8" sm="6">
+                <v-img
+                  :src="editSelectedItem.image"
+                  alt="Crop Image"
+                  contain
+                ></v-img>
+              </v-col>
+              <!-- Details -->
+              <v-col cols="12" md="4" sm="6" class="pa-4">
+                <h2>{{ editSelectedItem.cropName }}</h2>
+                <p>{{ editSelectedItem.cropVariation }}</p>
+                <p>
+                  <strong>Min Temperature:</strong>
+                  {{ editSelectedItem.tempmin }} °C
+                </p>
+                <p>
+                  <strong>Max Temperature:</strong>
+                  {{ editSelectedItem.tempmax }} °C
+                </p>
+                <p>
+                  <strong>Min Humidity:</strong>
+                  {{ editSelectedItem.humidmin }} %
+                </p>
+                <p>
+                  <strong>Max Humidity:</strong>
+                  {{ editSelectedItem.humidmax }} %
+                </p>
+                <p><strong>Min PH:</strong> {{ editSelectedItem.pHmin }}</p>
+                <p><strong>Max PH:</strong> {{ editSelectedItem.pHmax }}</p>
+                <p><strong>Min TDS:</strong> {{ editSelectedItem.tdsmin }}</p>
+                <p><strong>Max TDS:</strong> {{ editSelectedItem.tdsmax }}</p>
+                <p>
+                  <strong>Min Water Temperature:</strong>
+                  {{ editSelectedItem.watermin }} °C
+                </p>
+                <p>
+                  <strong>Max Water Temperature:</strong>
+                  {{ editSelectedItem.watermax }} °C
+                </p>
+              </v-col>
+              <v-col cols="12">
+                <h3>Description</h3>
+                <br />
+                <p style="text-indent: 20px; text-align: justify">
+                  {{ editSelectedItem.description }}
+                </p>
+              </v-col>
+            </v-row>
+            <br />
+            <br />
+            <br />
+            <!-- Editable Fields -->
+            <v-row justify="center" class="pa-5">
+              <!-- Text Fields -->
+              <v-row justify="center" class="pa-5">
+                <!-- Text Fields -->
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.cropName"
+                    label="Crop Name"
+                    outlined
+                    small
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.cropVariation"
+                    label="Crop Variation"
+                    outlined
+                    small
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.tempmin"
+                    type="number"
+                    label="Min Temperature"
+                    outlined
+                    small
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.tempmax"
+                    label="Max Temperature"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.humidmin"
+                    label="Min Humidity"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.humidmax"
+                    label="Max Humidity"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.pHmin"
+                    label="Min PH"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.pHmax"
+                    label="Max PH"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.tdsmin"
+                    label="Min TDS"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.tdsmax"
+                    label="Max TDS"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.watermin"
+                    label="Min Water Temperature"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editSelectedItem.watermax"
+                    label="Max Water Temperature"
+                    outlined
+                    small
+                    type="number"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-spacer></v-spacer>
+                <v-row>
+                  <v-col cols="12">
+                    <v-btn @click="editConfirmationDialog = true" color="success">Save</v-btn>
+                    <v-btn color="error" @click="editDialog = false"
+                      >Cancel</v-btn
+                    >
+                  </v-col>
+                </v-row>
+              </v-row>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <br />
     <v-row justify="center" align="center">
-      <v-btn color="succes" dark large @click="dialog = true">
-        ADD PRESET
-      </v-btn>
+      <v-btn color="success" dark large @click="dialog = true"
+        >ADD PRESET</v-btn
+      >
     </v-row>
     <br />
 
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
-        <v-card-title class="headline d-flex justify-center" r
-          >Add new preset</v-card-title
+        <v-card-title class="headline d-flex justify-center"
+          >ADD NEW PRESET</v-card-title
         >
         <v-card-text>
           <v-form @submit.prevent="submitForm">
@@ -39,7 +277,6 @@
                         label="CROP NAME"
                         required
                         outlined
-                        elevation="5"
                         :rules="nameRules"
                       ></v-text-field>
                     </v-col>
@@ -48,7 +285,6 @@
                         v-model="formData.cropVariation"
                         label="CROP VARIATION"
                         outlined
-                        elevation="5"
                         :rules="nameRules"
                       ></v-text-field>
                     </v-col>
@@ -56,11 +292,38 @@
                 </v-card>
               </v-col>
 
+              <v-col cols="12">
+                <v-card class="pa-4" outlined elevation="5">
+                  <v-text-field
+                    v-model="formData.imageUrl"
+                    label="IMAGE URL"
+                    readonly
+                    outlined
+                  ></v-text-field>
+                  <input
+                    type="file"
+                    @change="handleFileUpload"
+                    accept="image/*"
+                  />
+                </v-card>
+              </v-col>
+
+              <v-col cols="12">
+                <v-card class="pa-4" outlined elevation="5">
+                  <v-textarea
+                    v-model="formData.description"
+                    label="DESCRIPTION"
+                    required
+                    outlined
+                  ></v-textarea>
+                </v-card>
+              </v-col>
+
               <v-col cols="12" sm="6">
                 <v-card class="pa-4" outlined elevation="5">
-                  <v-card-title class="d-flex justify-center align-center">
-                    TEMPERATURE
-                  </v-card-title>
+                  <v-card-title class="d-flex justify-center align-center"
+                    >TEMPERATURE</v-card-title
+                  >
                   <v-row dense>
                     <v-col cols="6">
                       <v-text-field
@@ -92,9 +355,9 @@
 
               <v-col cols="12" sm="6">
                 <v-card class="pa-4" outlined elevation="5">
-                  <v-card-title class="d-flex justify-center align-center">
-                    HUMIDITY
-                  </v-card-title>
+                  <v-card-title class="d-flex justify-center align-center"
+                    >HUMIDITY</v-card-title
+                  >
                   <v-row dense>
                     <v-col cols="6">
                       <v-text-field
@@ -126,9 +389,9 @@
 
               <v-col cols="12" sm="6">
                 <v-card class="pa-4" outlined elevation="5">
-                  <v-card-title class="d-flex justify-center align-center">
-                    PH LEVEL
-                  </v-card-title>
+                  <v-card-title class="d-flex justify-center align-center"
+                    >PH LEVEL</v-card-title
+                  >
                   <v-row dense>
                     <v-col cols="6">
                       <v-text-field
@@ -160,9 +423,9 @@
 
               <v-col cols="12" sm="6">
                 <v-card class="pa-4" outlined elevation="5">
-                  <v-card-title class="d-flex justify-center align-center">
-                    TDS LEVEL
-                  </v-card-title>
+                  <v-card-title class="d-flex justify-center align-center"
+                    >TDS LEVEL</v-card-title
+                  >
                   <v-row dense>
                     <v-col cols="6">
                       <v-text-field
@@ -191,12 +454,11 @@
                   </v-row>
                 </v-card>
               </v-col>
-
               <v-col cols="12" sm="6">
                 <v-card class="pa-4" outlined elevation="5">
-                  <v-card-title class="d-flex justify-center align-center">
-                    WATER TEMPERATURE
-                  </v-card-title>
+                  <v-card-title class="d-flex justify-center align-center"
+                    >WATER TEMPERATURE</v-card-title
+                  >
                   <v-row dense>
                     <v-col cols="6">
                       <v-text-field
@@ -205,7 +467,7 @@
                         required
                         type="number"
                         min="1"
-                        max="5000"
+                        max="50"
                         outlined
                         :rules="nameRules"
                       ></v-text-field>
@@ -217,7 +479,7 @@
                         required
                         type="number"
                         min="1"
-                        max="5000"
+                        max="50"
                         outlined
                         :rules="nameRules"
                       ></v-text-field>
@@ -237,14 +499,13 @@
                       color="green"
                       dark
                       large
+                      >SAVE PRESET</v-btn
                     >
-                      SAVE PRESET
-                    </v-btn>
                   </v-col>
                   <v-col cols="auto">
-                    <v-btn @click="dialog = false" color="red" dark large>
-                      CANCEL PRESET
-                    </v-btn>
+                    <v-btn @click="dialog = false" color="red" dark large
+                      >CANCEL PRESET</v-btn
+                    >
                   </v-col>
                 </v-row>
               </v-col>
@@ -276,72 +537,86 @@
             <tr v-for="item in items" :key="item.id">
               <td>{{ item.cropName }}</td>
               <td>{{ item.cropVariation }}</td>
-              <td>{{ item.mintemp }} - {{ item.maxtemp }}</td>
-              <td>{{ item.minhumid }} - {{ item.maxhumid }}</td>
-              <td>{{ item.minph }} - {{ item.maxph }}</td>
-              <td>{{ item.mintds }} - {{ item.maxtds }}</td>
-              <td>{{ item.minWaterTemp }} - {{ item.maxWaterTemp }}</td>
+              <td>{{ item.tempmin }} - {{ item.tempmax }}</td>
+              <td>{{ item.humidmin }} - {{ item.humidmax }}</td>
+              <td>{{ item.pHmin }} - {{ item.pHmax }}</td>
+              <td>{{ item.tdsmin }} - {{ item.tdsmax }}</td>
+              <td>{{ item.watermin }} - {{ item.watermax }}</td>
               <td>
-                <v-btn color="primary" @click="viewItem(item)"> View </v-btn>
+                <v-btn color="primary" @click="viewItem(item)">View</v-btn>
+                <v-btn color="error" @click="openDeleteConfirmation(item)"
+                  >Delete</v-btn
+                >
+                <v-btn color="success" @click="editPreset(item)">Edit</v-btn>
               </td>
             </tr>
           </tbody>
         </template>
       </v-data-table>
-
-      <v-dialog v-model="dialogItem" max-width="600px">
-        <v-card>
-          <v-card-title>
-            <span class="headline"
-              >{{ selectedItem.cropName }} -
-              {{ selectedItem.cropVariation }}</span
-            >
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-img :src="selectedItem.image" aspect-ratio="1"></v-img>
-                </v-col>
-                <v-col cols="12">
-                  <p>{{ selectedItem.description }}</p>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="savePresetFromTable" color="success">
-              SAVE PRESET
-            </v-btn>
-
-            <v-btn color="error darken-1" @click="dialogItem = false"
-              >Close</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-card>
-    <br>
-    <p style="text-align:justify; text-indent:40px">This table data is from various studies and comprehensive guides on hydroponic crop production, which provide detailed parameters for optimal growing conditions for various crops in tropical environments.</p>
 
-    
-    <br>
-    <br>
+    <v-dialog v-model="dialogItem" max-width="800px">
+      <v-card>
+        <v-card-title class="headline d-flex justify-center">{{
+          selectedItem.cropName
+        }}</v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" md="8" sm="6">
+                <img
+                  :src="selectedItem.image"
+                  alt="Crop Image"
+                  style="width: 100%"
+                />
+              </v-col>
+              <v-col cols="12" md="4" sm="6">
+                <p><strong>Crop Name:</strong> {{ selectedItem.cropName }}</p>
+                <p>
+                  <strong>Crop Variation:</strong>
+                  {{ selectedItem.cropVariation }}
+                </p>
+                <p>
+                  <strong>Temperature:</strong> {{ selectedItem.tempmin }} -
+                  {{ selectedItem.tempmax }} °C
+                </p>
+                <p>
+                  <strong>Humidity:</strong> {{ selectedItem.humidmin }} -
+                  {{ selectedItem.humidmax }} %
+                </p>
+                <p>
+                  <strong>PH Level:</strong> {{ selectedItem.pHmin }} -
+                  {{ selectedItem.pHmax }}
+                </p>
+                <p>
+                  <strong>TDS Level:</strong> {{ selectedItem.tdsmin }} -
+                  {{ selectedItem.tdsmax }}
+                </p>
+                <p>
+                  <strong>Water Temperature:</strong>
+                  {{ selectedItem.watermin }} - {{ selectedItem.watermax }} °C
+                </p>
+              </v-col>
+              <v-col cols="12">
+                <h3>Description</h3>
+                <br />
+                <p style="text-indent: 20px; text-align: justify">
+                  {{ selectedItem.description }}
+                </p>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
 
-    <h4>Reference</h4>
-    <br>
-    <p style="text-align:justify; text-indent:40px">According to Resh (2013), successful hydroponic crop growth depends on factors like temperature, humidity, pH, TDS, and water temperature. For example, lettuce grows best at 15-24°C, 50-70% humidity, pH 5.5-6.5, TDS 560-840 ppm, and water temperature 20-24°C.</p>
-    <p style="text-align:justify; text-indent:40px">Jensen (2000) highlights the importance of understanding different hydroponic systems and their suitability for various crops, especially in tropical climates, emphasizing the need for optimal environmental conditions.</p>
-    <p style="text-align:justify; text-indent:40px">Samarakoon and Weerasinghe (2010) stress the importance of managing the environment in hydroponics to maximize crop yield and quality, tailoring conditions to specific crop needs in tropical regions.</p>
-    <p style="text-align:justify; text-indent:40px">The FAO (Savvas and Gruda, 2018) describes hydroponics as an efficient method for integrated crop management in greenhouses, focusing on nutrient management, environmental control, and crop selection for better productivity and sustainability.</p>
-    <p style="text-align:justify; text-indent:40px">Rodriguez-Delfin's (2008) study on hydroponics in Peru provides practical insights and data on optimal conditions for growing crops in tropical climates, helping growers make informed decisions for better yields.</p>
-    <br>
-    <br>
-    
-   
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="success" text @click="plantCrop = true">Plant</v-btn>
+          <v-btn color="error" text @click="dialogItem = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-    <!-- SUCCESS SNACKBAR     -->
+    <!-- SUCCESS SNACKBAR -->
     <v-snackbar color="green" v-model="successSnackbar">
       {{ textSuccess }}
       <template v-slot:action="{ attrs }">
@@ -350,362 +625,202 @@
           color="white"
           v-bind="attrs"
           @click="successSnackbar = false"
+          >Close</v-btn
         >
-          Close
-        </v-btn>
       </template>
     </v-snackbar>
 
-    <!-- ERROR SNACKBAR     -->
+    <!-- ERROR SNACKBAR -->
     <v-snackbar color="red" v-model="errorSnackbar">
       {{ textError }}
       <template v-slot:action="{ attrs }">
-        <v-btn color="white" text v-bind="attrs" @click="errorSnackbar = false">
-          Close
-        </v-btn>
+        <v-btn color="white" text v-bind="attrs" @click="errorSnackbar = false"
+          >Close</v-btn
+        >
       </template>
     </v-snackbar>
   </v-container>
 </template>
-
 <script>
 import firebase from "~/plugins/firebase";
 
 export default {
   data() {
     return {
-      dialog: false,
-      formData: {
-        // Initialize form data with default values
-        cropName: "",
-        cropVariation: "",
-
-        tempcurrent: 0,
-        cropTempMin: "",
-        cropTempMax: "",
-
-        humidcurrent: 0,
-        cropHumidMin: "",
-        cropHumidMax: "",
-
-        pHcurrent: 0,
-        cropPhMin: "",
-        cropPhMax: "",
-
-        tdscurrent: 0,
-        cropTdsMin: "",
-        cropTdsMax: "",
-
-        watercurrent: 0,
-        cropWaterMin: "",
-        cropWaterMax: "",
-
-        mistTemp: "0",
-        mistHumid: "0",
-        pumpPhLow: "0",
-        pumpPhHigh: "0",
-        pumpTdsA: "0",
-        pumpTdsB: "0",
-      },
       successSnackbar: false,
       errorSnackbar: false,
       textSuccess: "",
       textError: "",
 
-      nameRules: [(v) => !!v || "Field is required"],
+      editDialog: false, // Edit dialog visibility
+      editSelectedItem: {}, // Currently selected item for editing
 
+      deleteConfirmationDialog: false,
+      itemToDelete: null,
+      dialog: false,
       plantDialog: false,
-
-      search: "",
+      plantCrop: false,
       dialogItem: false,
-      selectedItem: {},
-      headers: [
-        { text: "Crop Name", value: "cropName" },
-        { text: "Crop Variation", value: "cropVariation" },
-        { text: "Temperature", value: "temperature" },
-        { text: "Humidity", value: "humidity" },
-        { text: "pH", value: "ph" },
-        { text: "TDS", value: "tds" },
-        { text: "Water Temp", value: "waterTemp" },
-        { text: "Actions", value: "actions", sortable: false },
-      ],
-      items: [
-        {
-          id: 1,
-          cropName: "Lettuce",
-          cropVariation: "Dabi",
-          mintemp: "15",
-          maxtemp: "20",
-          minhumid: "60",
-          maxhumid: "80",
-          minph: "5.5",
-          maxph: "6.5",
-          mintds: "700",
-          maxtds: "900",
-          minWaterTemp: "20",
-          maxWaterTemp: "25",
-          image: "/lettuce-dabi.jpg",
-          description:
-            "Dabi is a curly lettuce, Lollo Green type, fast growing and resistant to aphids. Salad is large, with fine light green leaves. It is recommended for spring and autumn crops.",
-        },
-        {
-          id: 2,
-          cropName: "Lettuce",
-          cropVariation: "Romaine",
-          mintemp: "15",
-          maxtemp: "24",
-          minhumid: "50",
-          maxhumid: "70",
-          minph: "5.5",
-          maxph: "6.5",
-          mintds: "560",
-          maxtds: "840",
-          minWaterTemp: "20",
-          maxWaterTemp: "24",
-          image: "/lettuce-romaine.jpg",
-          description:
-            "Romaine lettuce leaves are long and taper toward the root of the lettuce. The upper part of the leaves is a deeper green color and more flimsy than the lower leaves. Toward the bottom of the lettuce, the leaves become sturdier and have thick, white ribs that contain a slightly bitter fluid.",
-        },
-        {
-          id: 3,
-          cropName: "Lettuce",
-          cropVariation: "Butterhead",
-          mintemp: "15",
-          maxtemp: "24",
-          minhumid: "50",
-          maxhumid: "70",
-          minph: "5.5",
-          maxph: "6.5",
-          mintds: "560",
-          maxtds: "840",
-          minWaterTemp: "20",
-          maxWaterTemp: "24",
-          image: "/lettuce-butterhead.jpeg",
-          description: "Butterhead lettuce is a variety of lettuce known for its loose, round-shaped heads with tender, buttery-textured leaves. It's characterized by its soft, buttery taste and delicate texture, making it a popular choice for salads and sandwiches. The leaves of butterhead lettuce are typically pale green to yellow-green in color and have a mild, slightly sweet flavor.",
-        },
-        {
-          id: 4,
-          cropName: "Spinach",
-          cropVariation: "Savoy",
-          mintemp: "16",
-          maxtemp: "24",
-          minhumid: "70",
-          maxhumid: "80",
-          minph: "6.0",
-          maxph: "7.0",
-          mintds: "1050",
-          maxtds: "1400",
-          minWaterTemp: "18",
-          maxWaterTemp: "24",
-          image: "/spinach-savoy.jpg",
-          description: "Savoy spinach, also known as curly spinach, is a type of spinach that is unique for its crinkled, curly leaves. This variety of spinach is popular in Mediterranean cuisine and is used in a variety of dishes from salads to soups.",
-        },
-        {
-          id: 5,
-          cropName: "Basil",
-          cropVariation: "Sweet",
-          mintemp: "18",
-          maxtemp: "30",
-          minhumid: "60",
-          maxhumid: "80",
-          minph: "5.5",
-          maxph: "6.5",
-          mintds: "700",
-          maxtds: "1120",
-          minWaterTemp: "22",
-          maxWaterTemp: "25",
-          image: "/basil-sweet.jpg",
-          description: "also called common basil, is the most common and well-known variety of basil. sweet basil plants grow upright and can reach up to 2 feet in height. Small white flowers may bloom if the plant is allowed to bolt. This type of basil has a versatile sweet flavor that is perfect for many culinary uses. It works well in Italian dishes, pesto, salad dressings, sandwiches, and more. Sweet basil also pairs nicely with tomatoes, garlic, and mozzarella.",
-        },
-        {
-          id: 6,
-          cropName: "Kale",
-          cropVariation: "Curly",
-          mintemp: "18",
-          maxtemp: "24",
-          minhumid: "50",
-          maxhumid: "60",
-          minph: "5.5",
-          maxph: "6.5",
-          mintds: "1050",
-          maxtds: "1400",
-          minWaterTemp: "18",
-          maxWaterTemp: "24",
-          image: "/kale-curly.png",
-          description: "This is the type of kale you usually see in the grocery store. It’s a pale to deep green with large, frilly-edged leaves and long stems. It’s often sold as loose leaves bound together, even though it grows as a loose head.",
-        },
-        {
-          id: 7,
-          cropName: "Tomatoes",
-          cropVariation: "Cherry",
-          mintemp: "18",
-          maxtemp: "25",
-          minhumid: "70",
-          maxhumid: "80",
-          minph: "5.5",
-          maxph: "6.5",
-          mintds: "1400",
-          maxtds: "3500",
-          minWaterTemp: "20",
-          maxWaterTemp: "25",
-          image: "/tomatoes-cherry.jpg",
-          description: "Cherry tomatoes are a small variety of tomato that is named for its shape which resembles a cherry. Sometimes sold on the vine, the vegetable can range from a little smaller than a cherry to about twice the size, and can be red (the most common color), yellow, orange, green, or almost black. These tomatoes are prized by chefs for their juiciness and thin skin, which causes the fruits to pop in your mouth when eaten. Like all tomatoes, cherry tomatoes are best in the summer, but because of their small size, they can also be grown in a greenhouse while still maintaining much of their flavor and texture.",
-        },
-        {
-          id: 8,
-          cropName: "Cucumbers",
-          cropVariation: "Slicing",
-          mintemp: "18",
-          maxtemp: "24",
-          minhumid: "70",
-          maxhumid: "90",
-          minph: "5.5",
-          maxph: "6.0",
-          mintds: "1190",
-          maxtds: "1750",
-          minWaterTemp: "20",
-          maxWaterTemp: "24",
-          image: "/cucumbers-slicing.jpg",
-          description: "A slicing cucumber is a variety of cucumber that is typically longer and has a thinner skin. It is commonly used in salads, sandwiches, and as a refreshing snack due to its crisp texture and mild flavor.",
-        },
-        {
-          id: 9,
-          cropName: "Bell Peppers",
-          cropVariation: "Green",
-          mintemp: "20",
-          maxtemp: "25",
-          minhumid: "60",
-          maxhumid: "70",
-          minph: "6.0",
-          maxph: "6.5",
-          mintds: "1400",
-          maxtds: "3500",
-          minWaterTemp: "20",
-          maxWaterTemp: "25",
-          image: "/bellpepper-green.jpeg",
-          description: "Bell peppers (Capsicum annuum) are berries by botanical classification but are used mostly as culinary vegetables or culinary ingredients, just like tomatoes. The fact that they are produced from a flowering plant and contain seeds makes them fruits, technically speaking. These fruits or peppers are shaped like bells and are usually three to six inches long. They have thick flesh that is juicy and crunchy when eaten raw.",
-        },
-        {
-          id: 10,
-          cropName: "Peppermint",
-          cropVariation: "Mint",
-          mintemp: "18",
-          maxtemp: "24",
-          minhumid: "60",
-          maxhumid: "70",
-          minph: "5.5",
-          maxph: "6.0",
-          mintds: "1260",
-          maxtds: "1610",
-          minWaterTemp: "18",
-          maxWaterTemp: "22",
-          image: "/peppermint-mint.jpg",
-          description: "Peppermint, (Mentha ×piperita), strongly aromatic perennial herb of the mint family (Lamiaceae). Peppermint has a strong sweetish odour and a warm pungent taste with a cooling aftertaste. The leaves are typically used fresh as a culinary herb, and the flowers are dried and used to flavour candy, desserts, beverages, salads, and other foods.",
-        },
-      ],
+      editConfirmationDialog: false,
+      search: "",
 
-      savedPresets: [], // Array to store saved presets
+      formData: {
+        cropName: "",
+        cropVariation: "",
+        cropTempMin: "",
+        cropTempMax: "",
+        cropHumidMin: "",
+        cropHumidMax: "",
+        cropPhMin: "",
+        cropPhMax: "",
+        cropTdsMin: "",
+        cropTdsMax: "",
+        cropWaterMin: "",
+        cropWaterMax: "",
+        imageUrl: "", // Changed from image to imageUrl
+        description: "",
+      },
+      selectedItem: {},
+      items: [],
+      headers: [
+        { text: "CROP NAME", value: "cropName" },
+        { text: "CROP VARIATION", value: "cropVariation" },
+        { text: "TEMPERATURE (°C)", value: "temperature" },
+        { text: "HUMIDITY (%)", value: "humidity" },
+        { text: "PH LEVEL", value: "ph" },
+        { text: "TDS LEVEL", value: "tds" },
+        { text: "WATER TEMPERATURE (°C)", value: "waterTemp" },
+        { text: "ACTIONS", value: "actions", sortable: false },
+      ],
+      nameRules: [
+        (v) => !!v || "This field is required",
+        (v) => (v && v.length <= 50) || "Name must be less than 50 characters",
+      ],
     };
   },
-  computed: {
-    numberOfPages() {
-      return Math.ceil(this.items.length / this.itemsPerPage);
-    },
-    filteredKeys() {
-      return this.keys.filter((key) => key !== "Name");
-    },
-  },
-  mounted() {
-    // Fetch preset data based on preset ID from Firebase
-    // const presetId = this.$route.query.id;
-    // if (presetId) {
-    //   this.fetchPresetData(presetId);
-    // }
+  created() {
+    this.fetchData();
+    this.addPreSavedData();
   },
   methods: {
-    viewItem(item) {
-      this.selectedItem = item;
-      this.dialogItem = true;
-    },
-
-    async savePresetFromTable() {
-      if (!this.selectedItem) {
-        this.errorSnackbar = true;
-        this.textError = "No item selected!";
-        return;
-      }
-
-      // Populate form fields with selected item's data
-      this.formData.cropName = this.selectedItem.cropName;
-      this.formData.cropVariation = this.selectedItem.cropVariation;
-      this.formData.cropTempMin = this.selectedItem.mintemp;
-      this.formData.cropTempMax = this.selectedItem.maxtemp;
-      this.formData.cropHumidMin = this.selectedItem.minhumid;
-      this.formData.cropHumidMax = this.selectedItem.maxhumid;
-      this.formData.cropPhMin = this.selectedItem.minph;
-      this.formData.cropPhMax = this.selectedItem.maxph;
-      this.formData.cropTdsMin = this.selectedItem.mintds;
-      this.formData.cropTdsMax = this.selectedItem.maxtds;
-      this.formData.cropWaterMin = this.selectedItem.minWaterTemp;
-      this.formData.cropWaterMax = this.selectedItem.maxWaterTemp;
-
-      // Open the dialog
-      this.dialog = true;
-    },
-
-    // async fetchPresetData(presetId) {
-    //   try {
-    //     // Retrieve preset data from Firebase based on preset ID
-    //     const snapshot = await firebase.database().ref(`crop/${presetId}`).once('value');
-    //     const presetData = snapshot.val();
-    //     if (presetData) {
-    //       // If preset data exists, set the form data with preset values
-    //       this.formData = {
-    //         cropName: presetData.cropName || "",
-    //         cropVariation: presetData.cropVariation || "",
-    //         cropTempMin: presetData.cropTempMin || "25",
-    //         cropTempMax: presetData.cropTempMax || "30",
-    //         cropTempRef: presetData.cropTempRef || "28",
-    //         cropHumidMin: presetData.cropHumidMin || "50",
-    //         cropHumidMax: presetData.cropHumidMax || "55",
-    //         cropHumidRef: presetData.cropHumidRef || "53",
-    //         cropPhMin: presetData.cropPhMin || "5",
-    //         cropPhMax: presetData.cropPhMax || "8",
-    //         cropPhRef: presetData.cropPhRef || "7",
-    //         cropTdsMin: presetData.cropTdsMin || "700",
-    //         cropTdsMax: presetData.cropTdsMax || "1000",
-    //         cropTdsRef: presetData.cropTdsRef || "800",
-    //       };
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching preset data: ", error);
-    //     // Optionally, display an error message to the user
-    //   }
-    // },
-
-    openConfirmationDialog() {
-      // Open the confirmation dialog
-      this.plantDialog = true;
-    },
-
-    async addPresetConfirmed() {
+    
+    async plantItemConfirmed() {
       try {
-        // Call the submitForm method to add the preset
-        await this.submitForm();
+        await firebase
+          .database()
+          .ref("currentPlantedCrop")
+          .set(this.selectedItem); // Changed to firebase.database()
 
-        // Close the dialog after successful submission
-        this.plantDialog = false;
+        Promise.all([
+          firebase.database().ref("crop").set({
+            name: this.selectedItem.cropName,
+            variation: this.selectedItem.cropVariation,
+            image: this.selectedItem.image,
+            description: this.selectedItem.description,
+          }),
+          firebase.database().ref("humid").set({
+            humidmin: this.selectedItem.humidmin,
+            humidmax: this.selectedItem.humidmax,
+            humidcurrent: 0,
+            humidmist:  this.selectedItem.humidmist,
+          }),
+          firebase.database().ref("ph").set({
+            pHmin: this.selectedItem.pHmin,
+            pHmax: this.selectedItem.pHmax,
+            pHcurrent: 0,
+            pHpumpHigh: this.selectedItem.pHpumpHigh,
+            pHpumpLow: this.selectedItem.pHpumpLow,
+          }),
+          firebase.database().ref("tds").set({
+            tdsmin: this.selectedItem.tdsmin,
+            tdsmax: this.selectedItem.tdsmax,
+            tdspumpA: this.selectedItem.tdspumpA,
+            tdspumpB: this.selectedItem.tdspumpB,
+            tdscurrent: 0,
+            tdswaterpump: this.selectedItem.tdswaterpump,
+          }),
+          firebase.database().ref("temp").set({
+            tempmin: this.selectedItem.tempmin,
+            tempmax: this.selectedItem.tempmax,
+            tempcurrent: 0,
+            tempmist: this.selectedItem.tempmist,
+          }),
+          firebase.database().ref("watertemp").set({
+            watercurrent: 0,
+            watermax: this.selectedItem.watermin,
+            watermin: this.selectedItem.watermax,
+          }),
+        ]);
+
+        this.textSuccess = "Crop successfully planted!";
+        this.successSnackbar = true;
+        this.dialogItem = false;
+        this.plantCrop = false;
+
+        console.log("Crop planted:", this.selectedItem);
       } catch (error) {
-        console.error("Error adding preset: ", error);
-        // Optionally, display an error message to the user
-        // Close the dialog in case of an error
-        this.plantDialog = false;
+        console.error("Error planting crop: ", error);
+        this.textError = "Crop failed to plant!";
+        this.errorSnackbar = true;
       }
     },
 
-    async submitForm() {
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      const storageRef = firebase.storage().ref();
+      const uploadTask = storageRef.child("images/" + file.name).put(file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Handle progress
+        },
+        (error) => {
+          console.error("Error uploading image: ", error);
+        },
+        () => {
+          // Upload completed successfully, get download URL
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            this.formData.imageUrl = downloadURL;
+          });
+        }
+      );
+    },
+
+    editPreset(item) {
+      // Open the dialog for editing and populate with selected item's data
+      this.editSelectedItem = { ...item };
+      this.editDialog = true;
+    },
+
+    async saveEditedPreset() {
+      try {
+        await firebase
+          .database()
+          .ref("crops")
+          .child(this.editSelectedItem.id) // Change this.selectedItem to this.editSelectedItem
+          .update(this.editSelectedItem); // Change this.selectedItem to this.editSelectedItem
+        console.log("Preset updated:", this.editSelectedItem);
+        this.dialog = false; // Close the dialog after saving
+        this.fetchData(); // Refresh the data table
+        this.textSuccess = "Preset successfully updated!";
+        this.successSnackbar = true;
+        this.editDialog = false;
+      } catch (error) {
+        console.error("Error updating preset: ", error);
+        this.textError = "Error updating preset";
+        console.log(this.editSelectedItem.id);
+        this.errorSnackbar = true;
+      }
+      this.editConfirmationDialog = false; // Close the confirmation dialog after saving
+    },
+
+    // Existing methods...
+    async addPresetConfirmed() {
+      // Check if required fields are empty
       if (
         !this.formData.cropName ||
+        !this.formData.cropVariation ||
         !this.formData.cropTempMin ||
         !this.formData.cropTempMax ||
         !this.formData.cropHumidMin ||
@@ -717,83 +832,343 @@ export default {
         !this.formData.cropWaterMin ||
         !this.formData.cropWaterMax
       ) {
+        this.textError = "Please fill in all required fields";
         this.errorSnackbar = true;
-        this.textError = "Please fill in all required fields!";
-        return;
+        return; // Stop execution if any required field is empty
       }
+      const newPreset = {
+        cropName: this.formData.cropName,
+        cropVariation: this.formData.cropVariation,
+
+        tempmin: this.formData.cropTempMin,
+        tempmax: this.formData.cropTempMax,
+        tempmist: "0",
+        tempcurrent: 0,
+
+        humidmin: this.formData.cropHumidMin,
+        humidmax: this.formData.cropHumidMax,
+        humidmist: "0",
+        humidcurrent: 0,
+
+        pHmin: this.formData.cropPhMin,
+        pHmax: this.formData.cropPhMax,
+        pHpumpHigh: "0",
+        pHpumpLow: "0",
+        pHcurrent: 0,
+
+        tdsmin: this.formData.cropTdsMin,
+        tdsmax: this.formData.cropTdsMax,
+        tdspumpA: "0",
+        tdspumpB: "0",
+        tdscurrent: 0,
+        tdswaterpump: "0",
+
+        watermin: this.formData.cropWaterMin,
+        watermax: this.formData.cropWaterMax,
+        watercurrent: 0,
+
+        image: this.formData.imageUrl, // Changed to imageUrl
+        description: this.formData.description,
+      };
+
       try {
-        // Specify the path to the desired table
-        const cropRef = firebase.database().ref("details");
-
-        // Construct the data object
-        const cropData = {
-          name: this.formData.cropName,
-          variation: this.formData.cropVariation,
-          // watertemp: this.formData.cropWaterTempRef,
-          temperature: {
-            min: this.formData.cropTempMin,
-            max: this.formData.cropTempMax,
-            // ref: this.formData.cropTempRef,
-            tempmist: this.formData.mistTemp,
-            tempcurrent: this.formData.tempcurrent,
-          },
-          humidity: {
-            min: this.formData.cropHumidMin,
-            max: this.formData.cropHumidMax,
-            // ref: this.formData.cropHumidRef,
-            humidmist: this.formData.mistHumid,
-            humidcurrent: this.formData.humidcurrent,
-          },
-          pH: {
-            min: this.formData.cropPhMin,
-            max: this.formData.cropPhMax,
-            // ref: this.formData.cropPhRef,
-            pHpumpHigh: this.formData.pumpPhHigh,
-            pHpumpLow: this.formData.pumpPhLow,
-            pHcurrent: this.formData.pHcurrent,
-          },
-          tds: {
-            min: this.formData.cropTdsMin,
-            max: this.formData.cropTdsMax,
-            // ref: this.formData.cropTdsRef,
-            tdspumpA: this.formData.pumpTdsA,
-            tdspumpB: this.formData.pumpTdsB,
-            tdscurrent: this.formData.tdscurrent,
-          },
-          watertemp: {
-            min: this.formData.cropWaterMin,
-            max: this.formData.cropWaterMax,
-            watercurrent: this.formData.watercurrent,
-          },
-        };
-
-        // Save the entire crop data object at once
-        await cropRef.push(cropData);
-
-        console.log("Data added successfully!");
+        const newPresetRef = firebase.database().ref("crops").push(); // Changed to firebase.database()
+        await newPresetRef.set(newPreset);
+        this.items.push({ ...newPreset, id: newPresetRef.key });
+        this.plantDialog = false;
+        this.fetchData();
+        this.dialog = false;
+        this.textSuccess = "Data successfully added!";
         this.successSnackbar = true;
-        this.textSuccess = "Presets Successfully Added!";
-        this.dialog = false; // Close the dialog after successful submission
+
+        // Clear the formData object
+        this.formData = {
+          cropName: "",
+          cropVariation: "",
+          cropTempMin: "",
+          cropTempMax: "",
+          cropHumidMin: "",
+          cropHumidMax: "",
+          cropPhMin: "",
+          cropPhMax: "",
+          cropTdsMin: "",
+          cropTdsMax: "",
+          cropWaterMin: "",
+          cropWaterMax: "",
+          imageUrl: "",
+          description: "",
+        };
       } catch (error) {
-        console.error("Error adding data: ", error);
+        console.error("Error adding document: ", error);
+        this.textError = "Error saving data";
         this.errorSnackbar = true;
-        this.textError = "Failed to add presets!";
+      }
+    },
+
+    async fetchData() {
+      try {
+        const snapshot = await firebase.database().ref("crops").once("value");
+        const cropsData = snapshot.val();
+        this.items = Object.keys(cropsData).map((key) => ({
+          id: key, // Use the Firebase key as the id
+          ...cropsData[key],
+        }));
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    },
+
+    openDeleteConfirmation(item) {
+      this.itemToDelete = item;
+      this.deleteConfirmationDialog = true;
+    },
+    async deletePresetConfirmed() {
+      if (this.itemToDelete) {
+        try {
+          // Retrieve the image URL from the item being deleted
+          const imageUrlToDelete = this.itemToDelete.image;
+
+          // Delete the item from the database
+          await firebase
+            .database()
+            .ref("crops")
+            .child(this.itemToDelete.id)
+            .remove();
+
+          // Remove the item from the local items array
+          this.items = this.items.filter(
+            (item) => item.id !== this.itemToDelete.id
+          );
+
+          // Delete the image file from Firebase Storage
+          if (imageUrlToDelete) {
+            const storageRef = firebase.storage().refFromURL(imageUrlToDelete);
+            await storageRef.delete();
+          }
+
+          // Close the delete confirmation dialog and reset itemToDelete
+          this.deleteConfirmationDialog = false;
+          this.itemToDelete = null;
+
+          // Show success snackbar
+          this.textSuccess = "Data successfully deleted!";
+          this.successSnackbar = true;
+        } catch (error) {
+          console.error("Error deleting document: ", error);
+        }
+      }
+    },
+
+    openConfirmationDialog() {
+      this.plantDialog = true; // Set plantDialog to true to open the confirmation dialog
+    },
+
+    viewItem(item) {
+      this.selectedItem = item;
+      this.dialogItem = true; // Open the dialog to view the item details
+    },
+
+    // async plantSelectedItem() {
+    //   try {
+    //     await firebase
+    //       .database()
+    //       .ref("currentPlantedCrop")
+    //       .set(this.selectedItem); // Changed to firebase.database()
+    //     console.log("Crop planted:", this.selectedItem);
+    //   } catch (error) {
+    //     console.error("Error planting crop: ", error);
+    //   }
+    //   this.dialogItem = false;
+    // },
+
+    
+    async addPreSavedData() {
+      // Pre-saved data with images and descriptions
+      const preSavedData = [
+        {
+          cropName: "Tomato",
+          cropVariation: "Cherry",
+
+          tempmin: "18",
+          tempmax: "25",
+          tempcurrent: 0,
+          tempmist: "0",
+
+          humidmin: "70",
+          humidmax: "80",
+          humidcurrent: 0,
+          humidmist: "0",
+
+          pHmin: "5",
+          pHmax: "6",
+          pHcurrent: 0,
+          pHpumpHigh: "0",
+          pHpumpLow: "0",
+
+          tdsmin: "1400",
+          tdsmax: "3500",
+          tdscurrent: 0,
+          tdspumpA: "0",
+          tdspumpB: "0",
+          tdswaterpump: "0",
+
+          watermin: "20",
+          watermax: "25",
+          watercurrent: 0,
+
+          image: "https://tse1.mm.bing.net/th?id=OIP.7BlQ5cKEulARP8-pIJlWtgFNC7&pid=Api&P=0&h=220",
+          description: "Cherry tomatoes are a small variety of tomato that is named for its shape which resembles a cherry. Sometimes sold on the vine, the vegetable can range from a little smaller than a cherry to about twice the size, and can be red (the most common color), yellow, orange, green, or almost black. These tomatoes are prized by chefs for their juiciness and thin skin, which causes the fruits to pop in your mouth when eaten. Like all tomatoes, cherry tomatoes are best in the summer, but because of their small size, they can also be grown in a greenhouse while still maintaining much of their flavor and texture. The affordable veggie can be eaten as is after a quick rinse and doesn't require peeling, seeding, or even chopping.",
+        },
+        {
+          cropName: "Lettuce",
+          cropVariation: "Butterhead",
+
+          tempmin: "15",
+          tempmax: "24",
+          tempcurrent: 0,
+          tempmist: "0",
+
+          humidmin: "50",
+          humidmax: "70",
+          humidcurrent: 0,
+          humidmist: "0",
+
+          pHmin: "5.5",
+          pHmax: "6.5",
+          pHcurrent: 0,
+          pHpumpHigh: "0",
+          pHpumpLow: "0",
+
+          tdsmin: "560",
+          tdsmax: "840",
+          tdscurrent: 0,
+          tdspumpA: "0",
+          tdspumpB: "0",
+          tdswaterpump: "0",
+
+          watermin: "20",
+          watermax: "24",
+          watercurrent: 0,
+
+          image: "https://auscrops.com.au/wp-content/uploads/2023/01/butterhead-lettuce.jpg",
+          description: "Butterhead lettuce is a type of lettuce with a soft texture and a mild flavor. It is named for its butter-like shape.This lettuce is mostly used in salads. It is soft and usually has a creamy texture. This green veggie can be harvested early for Butterhead salad or later for Butter leaf lettuce. Butterhead lettuce is available in both red and green varieties. The Butterhead lettuce is also referred to as Boston, Buttercrunch, and Butter.This lettuce has a mild flavor and is perfect for making salads or eating plain, out of hand. It is available year-round but peaks in the summer months from May through September.",
+        },
+        {
+          cropName: "Lettuce",
+          cropVariation: "Romaine",
+
+          tempmin: "15",
+          tempmax: "24",
+          tempcurrent: 0,
+          tempmist: "0",
+
+          humidmin: "50",
+          humidmax: "70",
+          humidcurrent: 0,
+          humidmist: "0",
+
+          pHmin: "5.5",
+          pHmax: "6.5",
+          pHcurrent: 0,
+          pHpumpHigh: "0",
+          pHpumpLow: "0",
+
+          tdsmin: "560",
+          tdsmax: "840",
+          tdscurrent: 0,
+          tdspumpA: "0",
+          tdspumpB: "0",
+          tdswaterpump: "0",
+
+          watermin: "20",
+          watermax: "24",
+          watercurrent: 0,
+
+          image: "https://growincrazyacres.com/wp-content/uploads/2014/04/romaine-lettuce.jpg",
+          description: "Romaine or cos lettuce (Lactuca sativa L. var. longifolia) is a variety of lettuce that grows in a tall head of sturdy dark green leaves with firm ribs down their centers. Unlike most lettuces, it is tolerant of heat. In North America, romaine is often sold as whole heads or as hearts that have had the outer leaves removed and are often packaged together.",
+        },
+        {
+          cropName: "Spinach",
+          cropVariation: "Savoy",
+
+          tempmin: "16",
+          tempmax: "24",
+          tempcurrent: 0,
+          tempmist: "0",
+
+          humidmin: "70",
+          humidmax: "80",
+          humidcurrent: 0,
+          humidmist: "0",
+
+          pHmin: "6",
+          pHmax: "7",
+          pHcurrent: 0,
+          pHpumpHigh: "0",
+          pHpumpLow: "0",
+
+          tdsmin: "1050",
+          tdsmax: "1400",
+          tdscurrent: 0,
+          tdspumpA: "0",
+          tdspumpB: "0",
+          tdswaterpump: "0",
+
+          watermin: "18",
+          watermax: "24",
+          watercurrent: 0,
+
+          image: "https://i.etsystatic.com/23873817/r/il/6d3e64/2847588617/il_fullxfull.2847588617_7f91.jpg",
+          description: "Savoy spinach is a variety of spinach known for its unique and distinctive appearance. It is characterized by its dark green, crinkly or wrinkled leaves that have a curly or savoyed texture. The term “savoyed” refers to the puckered or crinkled appearance of the leaves, which sets it apart from other spinach varieties.",
+        },
+        {
+          cropName: "Cucumber",
+          cropVariation: "Slicing",
+
+          tempmin: "18",
+          tempmax: "24",
+          tempcurrent: 0,
+          tempmist: "0",
+
+          humidmin: "70",
+          humidmax: "90",
+          humidcurrent: 0,
+          humidmist: "0",
+
+          pHmin: "5",
+          pHmax: "6",
+          pHcurrent: 0,
+          pHpumpHigh: "0",
+          pHpumpLow: "0",
+
+          tdsmin: "1190",
+          tdsmax: "1750",
+          tdscurrent: 0,
+          tdspumpA: "0",
+          tdspumpB: "0",
+          tdswaterpump: "0",
+
+          watermin: "20",
+          watermax: "24",
+          watercurrent: 0,
+
+          image: "https://h2.commercev3.net/cdn.gurneys.com/images/500/61949.jpg",
+          description: "A slicing cucumber is a general term for any cucumber that’s harvested when it’s around six to ten inches long. These cucumbers are bigger than pickling cucumbers. ",
+        },
+        // Add more pre-saved data entries here
+      ];
+
+      try {
+        const updates = {};
+        preSavedData.forEach((item, index) => {
+          updates[`crops/${index}`] = item;
+        });
+        await firebase.database().ref().update(updates); // Changed to firebase.database()
+        console.log("Pre-saved data added successfully");
+      } catch (error) {
+        console.error("Error adding pre-saved data: ", error);
       }
     },
   },
 };
 </script>
-
-<style>
-.bordered-container {
-  padding: 20px; /* Add padding to give some space between content and border */
-  border-radius: 2px;
-  /* background-color: #DD
-  E6ED; */
-  
-}
-
-h3{
-  text-align:center;
-}
-</style>

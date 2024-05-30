@@ -96,11 +96,11 @@ export default {
         //   title: "Preset",
         //   to: "/presets",
         // },
-        {
-          icon: "mdi-flower",
-          title: "Plant Crop",
-          to: "/table",
-        },
+        // {
+        //   icon: "mdi-flower",
+        //   title: "Plant Crop",
+        //   to: "/table",
+        // },
         {
           icon: "mdi-wrench",
           title: "Presets",

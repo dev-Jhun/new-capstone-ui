@@ -239,7 +239,11 @@
                 <v-spacer></v-spacer>
                 <v-row>
                   <v-col cols="12">
-                    <v-btn @click="editConfirmationDialog = true" color="success">Save</v-btn>
+                    <v-btn
+                      @click="editConfirmationDialog = true"
+                      color="success"
+                      >Save</v-btn
+                    >
                     <v-btn color="error" @click="editDialog = false"
                       >Cancel</v-btn
                     >
@@ -703,7 +707,6 @@ export default {
     this.addPreSavedData();
   },
   methods: {
-    
     async plantItemConfirmed() {
       try {
         await firebase
@@ -722,7 +725,7 @@ export default {
             humidmin: this.selectedItem.humidmin,
             humidmax: this.selectedItem.humidmax,
             humidcurrent: 0,
-            humidmist:  this.selectedItem.humidmist,
+            humidmist: this.selectedItem.humidmist,
           }),
           firebase.database().ref("ph").set({
             pHmin: this.selectedItem.pHmin,
@@ -767,6 +770,12 @@ export default {
 
     handleFileUpload(event) {
       const file = event.target.files[0];
+
+      if (!file) {
+        // No file was selected, exit the function
+        return;
+      }
+
       const storageRef = firebase.storage().ref();
       const uploadTask = storageRef.child("images/" + file.name).put(file);
 
@@ -956,6 +965,7 @@ export default {
         } catch (error) {
           console.error("Error deleting document: ", error);
         }
+        this.deleteConfirmationDialog = false;
       }
     },
 
@@ -981,7 +991,6 @@ export default {
     //   this.dialogItem = false;
     // },
 
-    
     async addPreSavedData() {
       // Pre-saved data with images and descriptions
       const preSavedData = [
@@ -1016,8 +1025,10 @@ export default {
           watermax: "25",
           watercurrent: 0,
 
-          image: "https://tse1.mm.bing.net/th?id=OIP.7BlQ5cKEulARP8-pIJlWtgFNC7&pid=Api&P=0&h=220",
-          description: "Cherry tomatoes are a small variety of tomato that is named for its shape which resembles a cherry. Sometimes sold on the vine, the vegetable can range from a little smaller than a cherry to about twice the size, and can be red (the most common color), yellow, orange, green, or almost black. These tomatoes are prized by chefs for their juiciness and thin skin, which causes the fruits to pop in your mouth when eaten. Like all tomatoes, cherry tomatoes are best in the summer, but because of their small size, they can also be grown in a greenhouse while still maintaining much of their flavor and texture. The affordable veggie can be eaten as is after a quick rinse and doesn't require peeling, seeding, or even chopping.",
+          image:
+            "https://tse1.mm.bing.net/th?id=OIP.7BlQ5cKEulARP8-pIJlWtgFNC7&pid=Api&P=0&h=220",
+          description:
+            "Cherry tomatoes are a small variety of tomato that is named for its shape which resembles a cherry. Sometimes sold on the vine, the vegetable can range from a little smaller than a cherry to about twice the size, and can be red (the most common color), yellow, orange, green, or almost black. These tomatoes are prized by chefs for their juiciness and thin skin, which causes the fruits to pop in your mouth when eaten. Like all tomatoes, cherry tomatoes are best in the summer, but because of their small size, they can also be grown in a greenhouse while still maintaining much of their flavor and texture. The affordable veggie can be eaten as is after a quick rinse and doesn't require peeling, seeding, or even chopping.",
         },
         {
           cropName: "Lettuce",
@@ -1050,8 +1061,10 @@ export default {
           watermax: "24",
           watercurrent: 0,
 
-          image: "https://auscrops.com.au/wp-content/uploads/2023/01/butterhead-lettuce.jpg",
-          description: "Butterhead lettuce is a type of lettuce with a soft texture and a mild flavor. It is named for its butter-like shape.This lettuce is mostly used in salads. It is soft and usually has a creamy texture. This green veggie can be harvested early for Butterhead salad or later for Butter leaf lettuce. Butterhead lettuce is available in both red and green varieties. The Butterhead lettuce is also referred to as Boston, Buttercrunch, and Butter.This lettuce has a mild flavor and is perfect for making salads or eating plain, out of hand. It is available year-round but peaks in the summer months from May through September.",
+          image:
+            "https://auscrops.com.au/wp-content/uploads/2023/01/butterhead-lettuce.jpg",
+          description:
+            "Butterhead lettuce is a type of lettuce with a soft texture and a mild flavor. It is named for its butter-like shape.This lettuce is mostly used in salads. It is soft and usually has a creamy texture. This green veggie can be harvested early for Butterhead salad or later for Butter leaf lettuce. Butterhead lettuce is available in both red and green varieties. The Butterhead lettuce is also referred to as Boston, Buttercrunch, and Butter.This lettuce has a mild flavor and is perfect for making salads or eating plain, out of hand. It is available year-round but peaks in the summer months from May through September.",
         },
         {
           cropName: "Lettuce",
@@ -1084,8 +1097,10 @@ export default {
           watermax: "24",
           watercurrent: 0,
 
-          image: "https://growincrazyacres.com/wp-content/uploads/2014/04/romaine-lettuce.jpg",
-          description: "Romaine or cos lettuce (Lactuca sativa L. var. longifolia) is a variety of lettuce that grows in a tall head of sturdy dark green leaves with firm ribs down their centers. Unlike most lettuces, it is tolerant of heat. In North America, romaine is often sold as whole heads or as hearts that have had the outer leaves removed and are often packaged together.",
+          image:
+            "https://growincrazyacres.com/wp-content/uploads/2014/04/romaine-lettuce.jpg",
+          description:
+            "Romaine or cos lettuce (Lactuca sativa L. var. longifolia) is a variety of lettuce that grows in a tall head of sturdy dark green leaves with firm ribs down their centers. Unlike most lettuces, it is tolerant of heat. In North America, romaine is often sold as whole heads or as hearts that have had the outer leaves removed and are often packaged together.",
         },
         {
           cropName: "Spinach",
@@ -1118,8 +1133,10 @@ export default {
           watermax: "24",
           watercurrent: 0,
 
-          image: "https://i.etsystatic.com/23873817/r/il/6d3e64/2847588617/il_fullxfull.2847588617_7f91.jpg",
-          description: "Savoy spinach is a variety of spinach known for its unique and distinctive appearance. It is characterized by its dark green, crinkly or wrinkled leaves that have a curly or savoyed texture. The term “savoyed” refers to the puckered or crinkled appearance of the leaves, which sets it apart from other spinach varieties.",
+          image:
+            "https://i.etsystatic.com/23873817/r/il/6d3e64/2847588617/il_fullxfull.2847588617_7f91.jpg",
+          description:
+            "Savoy spinach is a variety of spinach known for its unique and distinctive appearance. It is characterized by its dark green, crinkly or wrinkled leaves that have a curly or savoyed texture. The term “savoyed” refers to the puckered or crinkled appearance of the leaves, which sets it apart from other spinach varieties.",
         },
         {
           cropName: "Cucumber",
@@ -1152,8 +1169,10 @@ export default {
           watermax: "24",
           watercurrent: 0,
 
-          image: "https://h2.commercev3.net/cdn.gurneys.com/images/500/61949.jpg",
-          description: "A slicing cucumber is a general term for any cucumber that’s harvested when it’s around six to ten inches long. These cucumbers are bigger than pickling cucumbers. ",
+          image:
+            "https://h2.commercev3.net/cdn.gurneys.com/images/500/61949.jpg",
+          description:
+            "A slicing cucumber is a general term for any cucumber that’s harvested when it’s around six to ten inches long. These cucumbers are bigger than pickling cucumbers. ",
         },
         // Add more pre-saved data entries here
       ];

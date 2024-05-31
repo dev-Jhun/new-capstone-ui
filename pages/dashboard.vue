@@ -25,7 +25,7 @@
             <v-container>
               <v-row class="pa-7">
                 <v-col cols="12" md="8" sm="6">
-                  <img alt="Crop Image" :src="latestCropImage" style="width: 100%;" />
+                  <img alt="Crop Image" :src="latestCropImage" style="width: 80%;" />
                 </v-col>
                 <v-col cols="12" md="4" sm="6">
                   <p><strong>Crop Name:</strong> {{ latestCropName }}</p>

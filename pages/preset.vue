@@ -547,11 +547,11 @@
               <td>{{ item.tdsmin }} - {{ item.tdsmax }}</td>
               <td>{{ item.watermin }} - {{ item.watermax }}</td>
               <td>
-                <v-btn color="primary" @click="viewItem(item)">View</v-btn>
+                <v-btn color="success" @click="viewItem(item)">Plant</v-btn>
                 <v-btn color="error" @click="openDeleteConfirmation(item)"
                   >Delete</v-btn
                 >
-                <v-btn color="success" @click="editPreset(item)">Edit</v-btn>
+                <v-btn color="primary" @click="editPreset(item)">Edit</v-btn>
               </td>
             </tr>
           </tbody>

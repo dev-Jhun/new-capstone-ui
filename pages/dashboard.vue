@@ -18,8 +18,8 @@
     <v-row>
       <v-col cols="12" >
         <v-card color="#DFF5FF">
-          <v-card-title class="headline d-flex justify-center"
-            >Current Planted</v-card-title
+          <v-card-title class="headline d-flex justify-center" style="font-weight:bold;"
+            >Currently Planted</v-card-title
           >
           <v-card-text>
             <v-container>
@@ -28,24 +28,24 @@
                   <img alt="Crop Image" :src="latestCropImage" style="width: 100%;" />
                 </v-col>
                 <v-col cols="12" md="4" sm="6">
-                  <p><strong>Crop Name:</strong> {{ latestCropName }}</p>
-                  <p>
+                  <p style="font-size:16px"><strong>Crop Name:</strong> {{ latestCropName }}</p>
+                  <p style="font-size:16px">
                     <strong>Crop Variation:</strong>
                     {{ latestCropVar }}
                   </p>
-                  <p><strong>Required Temperature:</strong>  {{ tempMin }} - {{ tempMax }} °C</p>
-                  <p><strong>Required Humidity:</strong>  {{ humidMin }} - {{ humidMax }} %</p>
-                  <p><strong>Required PH Level:</strong>  {{ phMin }} -  {{ phMax }}</p>
-                  <p><strong>Required TDS Level:</strong>  {{ tdsMin }} -  {{ tdsMax }}</p>
-                  <p>
+                  <p style="font-size:16px"><strong>Required Temperature:</strong>  {{ tempMin }} - {{ tempMax }} °C</p>
+                  <p style="font-size:16px"><strong>Required Humidity:</strong>  {{ humidMin }} - {{ humidMax }} %</p>
+                  <p style="font-size:16px"><strong>Required PH Level:</strong>  {{ phMin }} -  {{ phMax }}</p>
+                  <p style="font-size:16px"><strong>Required TDS Level:</strong>  {{ tdsMin }} -  {{ tdsMax }}</p>
+                  <p style="font-size:16px">
                     <strong>Required Water Temperature:</strong>
                     {{ waterTempMin }} -  {{ waterTempMax }} °C
                   </p>
                 </v-col>
                 <v-col cols="12">
-                  <h3>Description</h3>
+                  <h2>Description</h2>
                   <br />
-                  <p style="text-indent: 20px; text-align: justify"> {{ latestCropDesc }}</p>
+                  <p style="text-indent: 20px; text-align: justify;font-size:18px;" > {{ latestCropDesc }}</p>
                 </v-col>
               </v-row>
             </v-container>

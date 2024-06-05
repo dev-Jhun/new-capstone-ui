@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card color="#DFF5FF" elevation="2" class="switch-card" light>
+        <v-card color="#36454F" elevation="2" class="switch-card" dark>
           <!-- Switch to toggle mode -->
           <v-row justify="center">
             <v-col cols="auto">
@@ -18,8 +18,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#DFF5FF" class="pa-4" style="height:332px">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#36454F" class="pa-4" style="height:332px" dark>
           <v-card-title class="d-flex justify-center">
             MISTING
           </v-card-title>
@@ -50,8 +50,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#DFF5FF" class="pa-4">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#36454F" class="pa-4" dark>
           <v-card-title class="d-flex justify-center"> PH PUMPS </v-card-title>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
@@ -79,8 +79,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#DFF5FF" class="pa-4">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#36454F" class="pa-4" dark>
           <v-card-title class="d-flex justify-center"> TDS PUMPS </v-card-title>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
@@ -108,8 +108,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4" sm="6">
-        <v-card color="#DFF5FF" class="pa-4">
+      <v-col cols="12" md="3" sm="6">
+        <v-card color="#36454F" class="pa-4" style="height:332px" dark>
           <v-card-title class="d-flex justify-center">
             WATER PUMP
           </v-card-title>
@@ -220,6 +220,52 @@ export default {
             this.successSnackbar = true;
             this.successMessage = "All pumps stopped!";
             this.turnOffAllPumps();
+            firebase.database().ref("temp/tempmist").once("value", (snapshot) => {
+    const mistingValue = snapshot.val();
+    if (mistingValue !== null) {
+      this.isMistingRunningTemp = mistingValue === "1";
+    }
+  });
+
+    firebase.database().ref("humid/humidmist").once("value", (snapshot) => {
+    const tempmistingValue = snapshot.val();
+    if (tempmistingValue !== null) {
+      this.isMistingRunningTemp = tempmistingValue === "1";
+    }
+  });
+
+    firebase.database().ref("ph/pHpumpHigh").once("value", (snapshot) => {
+    const phUpPump = snapshot.val();
+    if (phUpPump !== null) {
+      this.isPhPumpUpRunning = phUpPump === "1";
+    }
+  });
+
+  firebase.database().ref("ph/pHpumpLow").once("value", (snapshot) => {
+    const phDownPump = snapshot.val();
+    if (phDownPump !== null) {
+      this.isPhPumpDownRunning = phDownPump === "1";
+    }
+  });
+  firebase.database().ref("tds/tdspumpA").once("value", (snapshot) => {
+    const tdsA = snapshot.val();
+    if (tdsA !== null) {
+      this.isTdsPumpARunning = tdsA === "1";
+    }
+  });
+  
+  firebase.database().ref("tds/tdspumpB").once("value", (snapshot) => {
+    const tdsB = snapshot.val();
+    if (tdsB !== null) {
+      this.isTdsPumpBRunning = tdsB === "1";
+    }
+  });
+  firebase.database().ref("tds/tdswaterpump").once("value", (snapshot) => {
+    const tdswater = snapshot.val();
+    if (tdswater !== null) {
+      this.isTdsWaterPumpRunning = tdswater === "1";
+    }
+  });
           }
         })
         .catch((error) => {
@@ -356,6 +402,54 @@ export default {
 
   mounted() {
 
+    firebase.database().ref("temp/tempmist").once("value", (snapshot) => {
+    const mistingValue = snapshot.val();
+    if (mistingValue !== null) {
+      this.isMistingRunningTemp = mistingValue === "1";
+    }
+  });
+
+    firebase.database().ref("humid/humidmist").once("value", (snapshot) => {
+    const tempmistingValue = snapshot.val();
+    if (tempmistingValue !== null) {
+      this.isMistingRunningTemp = tempmistingValue === "1";
+    }
+  });
+
+    firebase.database().ref("ph/pHpumpHigh").once("value", (snapshot) => {
+    const phUpPump = snapshot.val();
+    if (phUpPump !== null) {
+      this.isPhPumpUpRunning = phUpPump === "1";
+    }
+  });
+
+  firebase.database().ref("ph/pHpumpLow").once("value", (snapshot) => {
+    const phDownPump = snapshot.val();
+    if (phDownPump !== null) {
+      this.isPhPumpDownRunning = phDownPump === "1";
+    }
+  });
+  firebase.database().ref("tds/tdspumpA").once("value", (snapshot) => {
+    const tdsA = snapshot.val();
+    if (tdsA !== null) {
+      this.isTdsPumpARunning = tdsA === "1";
+    }
+  });
+  
+  firebase.database().ref("tds/tdspumpB").once("value", (snapshot) => {
+    const tdsB = snapshot.val();
+    if (tdsB !== null) {
+      this.isTdsPumpBRunning = tdsB === "1";
+    }
+  });
+  firebase.database().ref("tds/tdswaterpump").once("value", (snapshot) => {
+    const tdswater = snapshot.val();
+    if (tdswater !== null) {
+      this.isTdsWaterPumpRunning = tdswater === "1";
+    }
+  });
+
+  
     firebase
       .database()
       .ref("mode/auto")
@@ -403,7 +497,7 @@ export default {
 
 <style>
 .switch-card {
-  padding: 20px;
+  padding: 5px;
   display: flex;
   justify-content: space-between;
 }

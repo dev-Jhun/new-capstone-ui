@@ -4,18 +4,18 @@
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
-      color="#0766AD"
+      color="#36454F"
       dark
       fixed
       app
     >
-      <v-list-item two-line class="profile" dark>
+      <v-list-item two-line class="profile" color="#36454F">
         <v-list-item-avatar>
           <v-icon color="green">mdi-leaf</v-icon>
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title color="black">SMART HYDROPONICS</v-list-item-title>
+          <v-list-item-title>SMART HYDROPONICS</v-list-item-title>
           <!-- <v-list-item-subtitle>Logged In</v-list-item-subtitle> -->
         </v-list-item-content>
       </v-list-item>
@@ -38,7 +38,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app color="blue" dark>
+    <v-app-bar :clipped-left="clipped" fixed app color="#36454F" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
       <v-spacer />
@@ -140,7 +140,7 @@ export default {
 
 <style scoped>
 .profile {
-  background: #232d3f;
+  background: rgb(22, 22, 22);
 }
 </style>
 

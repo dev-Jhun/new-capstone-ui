@@ -62,7 +62,7 @@
 
     <!-- Edit Dialog -->
     <v-dialog v-model="editDialog" max-width="1200">
-      <v-card>
+      <v-card color="#36454F" dark>
         <v-card-title class="headline d-flex justify-center"
           >Edit Preset</v-card-title
         >
@@ -256,17 +256,14 @@
       </v-card>
     </v-dialog>
 
-    <br />
-    <v-row justify="center" align="center">
-      <v-btn color="success" dark large @click="dialog = true"
+    
+      <v-btn color="#36454F" dark large @click="dialog = true" width="100%" height="10vh" class="mb-2"
         >ADD PRESET</v-btn
       >
-    </v-row>
-    <br />
 
     <v-dialog v-model="dialog" max-width="800px">
-      <v-card>
-        <v-card-title class="headline d-flex justify-center"
+      <v-card color="#36454F">
+        <v-card-title class="headline d-flex justify-center" style="color: white;"
           >ADD NEW PRESET</v-card-title
         >
         <v-card-text>
@@ -522,8 +519,8 @@
 
     <br />
 
-    <v-card elevation="6">
-      <v-card-title>
+    <v-card elevation="6" color="#36454F" dark>
+      <v-card-title style="color: white;">
         Crop Information
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
@@ -533,6 +530,7 @@
           label="Search"
           single-line
           hide-details
+          dark
         ></v-text-field>
       </v-card-title>
       <v-data-table :headers="headers" :items="items" :search="search">
@@ -547,11 +545,11 @@
               <td>{{ item.tdsmin }} - {{ item.tdsmax }}</td>
               <td>{{ item.watermin }} - {{ item.watermax }}</td>
               <td>
-                <v-btn color="success" @click="viewItem(item)">Plant</v-btn>
-                <v-btn color="error" @click="openDeleteConfirmation(item)"
+                <v-btn color="success" @click="viewItem(item)" small>Plant</v-btn>
+                <v-btn color="primary" @click="editPreset(item)" small>Edit</v-btn>
+                <v-btn color="error" @click="openDeleteConfirmation (item) " small
                   >Delete</v-btn
                 >
-                <v-btn color="primary" @click="editPreset(item)">Edit</v-btn>
               </td>
             </tr>
           </tbody>
@@ -560,7 +558,7 @@
     </v-card>
 
     <v-dialog v-model="dialogItem" max-width="800px">
-      <v-card>
+      <v-card color="#36454F" dark>
         <v-card-title class="headline d-flex justify-center">{{
           selectedItem.cropName
         }}</v-card-title>
@@ -687,13 +685,13 @@ export default {
       selectedItem: {},
       items: [],
       headers: [
-        { text: "CROP NAME", value: "cropName" },
-        { text: "CROP VARIATION", value: "cropVariation" },
-        { text: "TEMPERATURE (°C)", value: "temperature" },
+        { text: "NAME", value: "cropName" },
+        { text: "VARIATION", value: "cropVariation" },
+        { text: "TEMP (°C)", value: "temperature" },
         { text: "HUMIDITY (%)", value: "humidity" },
-        { text: "PH LEVEL", value: "ph" },
+        { text: "PH", value: "ph" },
         { text: "TDS LEVEL", value: "tds" },
-        { text: "WATER TEMPERATURE (°C)", value: "waterTemp" },
+        { text: "WATER TEMP (°C)", value: "waterTemp" },
         { text: "ACTIONS", value: "actions", sortable: false },
       ],
       nameRules: [

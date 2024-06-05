@@ -1,68 +1,70 @@
 <template>
   <v-container>
-     <!-- Confirmation Dialog -->
-     <v-dialog v-model="showCurrentConfirmDialog" max-width="500">
+    <!-- Confirmation Dialog -->
+    <v-dialog v-model="showCurrentConfirmDialog" max-width="500">
       <v-card>
         <v-card-title class="headline">Confirm Removal</v-card-title>
         <v-card-text>
-          Are you sure you want to remove the current planted item? This action cannot be undone.
+          Are you sure you want to remove the current planted item? This action
+          cannot be undone.
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" text @click="removeCurrentPlanted">Remove</v-btn>
-          <v-btn color="error" text @click="showCurrentConfirmDialog = false">Cancel</v-btn>
+          <v-btn color="success" text @click="removeCurrentPlanted"
+            >Remove</v-btn
+          >
+          <v-btn color="error" text @click="showCurrentConfirmDialog = false"
+            >Cancel</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
 
+    <!-- <v-btn color="error" text @click="showCurrentConfirmDialog = true">Remove current planted</v-btn> -->
+
     <v-row>
-      <v-col cols="12" >
-        <v-card color="#DFF5FF">
-          <v-card-title class="headline d-flex justify-center" style="font-weight:bold;"
-            >Currently Planted</v-card-title
-          >
-          <v-card-text>
-            <v-container>
-              <v-row class="pa-7">
-                <v-col cols="12" md="8" sm="6">
-                  <img alt="Crop Image" :src="latestCropImage" style="width: 100%;" />
-                </v-col>
-                <v-col cols="12" md="4" sm="6">
-                  <p style="font-size:16px"><strong>Crop Name:</strong> {{ latestCropName }}</p>
-                  <p style="font-size:16px">
-                    <strong>Crop Variation:</strong>
-                    {{ latestCropVar }}
-                  </p>
-                  <p style="font-size:16px"><strong>Required Temperature:</strong>  {{ tempMin }} - {{ tempMax }} °C</p>
-                  <p style="font-size:16px"><strong>Required Humidity:</strong>  {{ humidMin }} - {{ humidMax }} %</p>
-                  <p style="font-size:16px"><strong>Required PH Level:</strong>  {{ phMin }} -  {{ phMax }}</p>
-                  <p style="font-size:16px"><strong>Required TDS Level:</strong>  {{ tdsMin }} -  {{ tdsMax }}</p>
-                  <p style="font-size:16px">
-                    <strong>Required Water Temperature:</strong>
-                    {{ waterTempMin }} -  {{ waterTempMax }} °C
-                  </p>
-                </v-col>
-                <v-col cols="12">
-                  <h2>Description</h2>
-                  <br />
-                  <p style="text-indent: 20px; text-align: justify;font-size:18px;" > {{ latestCropDesc }}</p>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="error" text @click="showCurrentConfirmDialog = true">Remove current planted</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="3" sm="6">
-        <v-card color="#DFF5FF">
+      <v-col cols="12" md="4" sm="6">
+        <v-card color="#36454F" dark>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bold mb-5 text-center">
+                {{ latestCropName }} - {{ latestCropVar }}
+              </v-list-item-title>
+              <v-row>
+                <v-spacer></v-spacer>
+                <v-col cols="9" class="crop-image-container">
+                  <v-dialog v-model="dialogImg" max-width="600px">
+                    <template v-slot:activator="{ on }">
+                      <img
+                        alt="Crop Image"
+                        :src="latestCropImage || '/v.png'"
+                        class="crop-image"
+                        v-on="on"
+                        style="border: 2px solid white"
+                      />
+                    </template>
+                    <v-card>
+                      <v-img
+                        :src="latestCropImage || '/v.png'"
+                        max-width="600px"
+                      ></v-img>
+                    </v-card>
+                  </v-dialog>
+                </v-col>
+                <v-spacer></v-spacer>
+              </v-row>
+            </v-list-item-content>
+          </v-list-item>
+        </v-card>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col cols="12" md="4" sm="6">
+        <v-card color="#36454F" dark>
+          <v-list-item two-line class="d-flex justify-center align-center">
+            <v-list-item-content>
+              <v-list-item-title
+                class="font-weight-bold mb-5 ml-12 text-center"
+              >
                 AIR TEMPERATURE
               </v-list-item-title>
               <!-- <v-list-item-subtitle>AIR TEMPERATURE</v-list-item-subtitle> -->
@@ -71,20 +73,25 @@
                 >{{ latestTemp
                 }}<span style="font-size: 25px"> °C </span></v-list-item-title
               >
-              <!-- <v-list-item-subtitle class="font-weight-bold mb-1 text-center"
+
+              <v-list-item-subtitle
+                class="font-weight-bold mb-1 ml-12 text-center"
                 >Required : {{ tempMin }} - {{ tempMax }}</v-list-item-subtitle
-              > -->
+              >
             </v-list-item-content>
             <v-icon class="display-3" color="blue">mdi-thermometer-high</v-icon>
           </v-list-item>
         </v-card>
       </v-col>
+      <v-spacer></v-spacer>
 
-      <v-col cols="12" md="3" sm="6">
-        <v-card color="#DFF5FF">
+      <v-col cols="12" md="4" sm="6">
+        <v-card color="#36454F" dark>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
-              <v-list-item-title class="font-weight-bold mb-5 text-center">
+              <v-list-item-title
+                class="font-weight-bold mb-5 ml-12 text-center"
+              >
                 HUMIDITY
               </v-list-item-title>
               <!-- <v-list-item-subtitle>HUMIDITY</v-list-item-subtitle> -->
@@ -93,20 +100,25 @@
                 >{{ latestHumid }}
                 <span style="font-size: 25px">%</span></v-list-item-title
               >
-              <!-- <v-list-item-subtitle class="font-weight-bold mb-1 text-center"
-                >Required : {{ humidMin }} - {{ humidMax }}</v-list-item-subtitle
-              > -->
+              <v-list-item-subtitle
+                class="font-weight-bold mb-1 ml-12 text-center"
+                >Required : {{ humidMin }} -
+                {{ humidMax }}</v-list-item-subtitle
+              >
             </v-list-item-content>
             <v-icon class="display-3" color="blue">mdi-weather-windy</v-icon>
           </v-list-item>
         </v-card>
       </v-col>
+      <v-spacer></v-spacer>
 
-      <v-col cols="12" md="3" sm="6">
-        <v-card color="#DFF5FF">
+      <v-col cols="12" md="4" sm="6">
+        <v-card color="#36454F" dark>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
-              <v-list-item-title class="font-weight-bold mb-5 text-center">
+              <v-list-item-title
+                class="font-weight-bold mb-5 ml-12 text-center"
+              >
                 <!-- {{ latestCropName }} - {{ latestCropVar }} -->
                 PH LEVEL
               </v-list-item-title>
@@ -115,20 +127,23 @@
               <v-list-item-title class="display-2 mb-5"
                 >{{ latestPh }} <span style="font-size: 25px">pH</span>
               </v-list-item-title>
-              <!-- <v-list-item-subtitle class="font-weight-bold mb-1 text-center"
+              <v-list-item-subtitle
+                class="font-weight-bold mb-1 ml-12 text-center"
                 >Required : {{ phMin }} - {{ phMax }}</v-list-item-subtitle
-              > -->
+              >
             </v-list-item-content>
             <v-icon class="display-3" color="blue">mdi-ph</v-icon>
           </v-list-item>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="3" sm="6">
-        <v-card color="#DFF5FF">
+      <v-col cols="12" md="4" sm="6">
+        <v-card color="#36454F" dark>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
-              <v-list-item-title class="font-weight-bold mb-5 text-center">
+              <v-list-item-title
+                class="font-weight-bold mb-5 ml-12 text-center"
+              >
                 <!-- {{ latestCropName }} - {{ latestCropVar }} -->
                 TDS LEVEL
               </v-list-item-title>
@@ -138,20 +153,23 @@
                 >{{ latestTds }}
                 <span style="font-size: 25px">ppm</span></v-list-item-title
               >
-              <!-- <v-list-item-subtitle class="font-weight-bold mb-1 text-center"
+              <v-list-item-subtitle
+                class="font-weight-bold mb-1 ml-12 text-center"
                 >Required : {{ tdsMin }} - {{ tdsMax }}</v-list-item-subtitle
-              > -->
+              >
             </v-list-item-content>
             <v-icon class="display-3" color="blue">mdi-beaker</v-icon>
           </v-list-item>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="3" sm="6">
-        <v-card color="#DFF5FF">
+      <v-col cols="12" md="4" sm="6">
+        <v-card color="#36454F" dark>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
-              <v-list-item-title class="font-weight-bold mb-5 text-center">
+              <v-list-item-title
+                class="font-weight-bold mb-5 ml-12 text-center"
+              >
                 <!-- {{ latestCropName }} - {{ latestCropVar }} -->
                 WATER TEMPERATURE
               </v-list-item-title>
@@ -161,9 +179,11 @@
                 >{{ latestWaterTemp }}
                 <span style="font-size: 25px">°C </span></v-list-item-title
               >
-              <!-- <v-list-item-subtitle class="font-weight-bold mb-1 text-center"
-                >Required : {{ waterTempMin }} - {{ waterTempMax }}</v-list-item-subtitle
-              > -->
+              <v-list-item-subtitle
+                class="font-weight-bold mb-1 ml-12 text-center"
+                >Required : {{ waterTempMax }} -
+                {{ waterTempMin }}</v-list-item-subtitle
+              >
             </v-list-item-content>
             <v-icon class="display-3" color="blue"
               >mdi-water-thermometer</v-icon
@@ -172,16 +192,146 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" md="2" sm="6">
+        <v-card color="#36454F" dark class="pa-4">
+          <h4 class="d-flex justify-center align-center">MISTING</h4>
+          <v-icon
+            class="display-1 d-flex justify-center align-center"
+            color="green"
+            >{{ iconTemp }}</v-icon
+          >
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="2" sm="6">
+        <v-card color="#36454F" dark class="pa-4">
+          <h4 class="d-flex justify-center align-center">PH UP</h4>
+          <v-icon
+            class="display-1 d-flex justify-center align-center"
+            color="green"
+            >{{ iconPhUp }}</v-icon
+          >
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="2" sm="6">
+        <v-card color="#36454F" dark class="pa-4">
+          <h4 class="d-flex justify-center align-center">PH DOWN</h4>
+          <v-icon
+            class="display-1 d-flex justify-center align-center"
+            color="green"
+            >{{ iconPhDown }}</v-icon
+          >
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="2" sm="6">
+        <v-card color="#36454F" dark class="pa-4">
+          <h4 class="d-flex justify-center align-center">SOLUTION A</h4>
+          <v-icon
+            class="display-1 d-flex justify-center align-center"
+            color="green"
+            >{{ iconTdsA }}</v-icon
+          >
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="2" sm="6">
+        <v-card color="#36454F" dark class="pa-4">
+          <h4 class="d-flex justify-center align-center">SOLUTION B</h4>
+          <v-icon
+            class="display-1 d-flex justify-center align-center"
+            color="green"
+            >{{ iconTdsB }}</v-icon
+          >
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="2" sm="6">
+        <v-card color="#36454F" dark class="pa-4">
+          <h4 class="d-flex justify-center align-center">WATERPUMP</h4>
+          <v-icon
+            class="display-1 d-flex justify-center align-center"
+            color="green"
+            >{{ iconTdsWater }}</v-icon
+          >
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-card color="#36454F" dark height="400">
+          <br>
+          <br>
+          <v-card-title class="display-1 d-flex justify-center align-center"> TIME </v-card-title>
+          <br>
+          <v-card-text class="display-4 d-flex justify-center align-center">
+            {{ time }}
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-card class="same-size" color="#36454F" dark>
+          <v-card-text>
+            <v-row align="center" justify="space-between">
+              <v-card-title> Calendar </v-card-title>
+              <v-spacer></v-spacer>
+              <v-col cols="4">
+                <v-select
+                  v-model="selectedMonth"
+                  :items="months"
+                  label="Select Month"
+                  @change="changeMonth"
+                ></v-select>
+              </v-col>
+            </v-row>
+            <v-sheet height="300" dark>
+              <v-calendar
+                v-model="focus"
+                color="primary"
+              ></v-calendar>
+            </v-sheet>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 
 <script>
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 import firebase from "~/plugins/firebase";
 
 export default {
   data() {
     return {
+      focus: new Date().toISOString().substr(0, 10),
+      selectedMonth: new Date().getMonth(),
+      months: monthNames.map((month, index) => ({
+        text: month,
+        value: index,
+      })),
+
+      time: this.formatTime(new Date()),
+
+      dialogImg: false,
+      iconValue: null,
+      iconPhUpValue: null,
+      iconPhDownValue: null,
+      iconSolAValue: null,
+      iconSolBValue: null,
+      iconWaterValue: null,
+
       showCurrentConfirmDialog: false,
       //for sensor values
       latestCropName: "",
@@ -193,7 +343,6 @@ export default {
       latestPh: 0,
       latestTds: 0,
       latestWaterTemp: 0,
-
 
       currentPlantedItem: {},
       items: [],
@@ -217,8 +366,92 @@ export default {
       waterTempMax: 0,
     };
   },
+  computed: {
+    iconTemp() {
+      return this.iconValue === "1"
+        ? "mdi-circle-slice-8"
+        : "mdi-circle-outline";
+    },
+    iconPhUp() {
+      return this.iconPhUpValue === "1"
+        ? "mdi-circle-slice-8"
+        : "mdi-circle-outline";
+    },
+    iconPhDown() {
+      return this.iconPhDownValue === "1"
+        ? "mdi-circle-slice-8"
+        : "mdi-circle-outline";
+    },
+    iconTdsA() {
+      return this.iconSolAValue === "1"
+        ? "mdi-circle-slice-8"
+        : "mdi-circle-outline";
+    },
+    iconTdsB() {
+      return this.iconSolBValue === "1"
+        ? "mdi-circle-slice-8"
+        : "mdi-circle-outline";
+    },
+    iconTdsWater() {
+      return this.iconWaterValue === "1"
+        ? "mdi-circle-slice-8"
+        : "mdi-circle-outline";
+    },
+  },
   methods: {
+    changeMonth(monthIndex) {
+      const date = new Date(new Date().getFullYear(), monthIndex, 1);
+      this.focus = date.toISOString().substr(0, 10);
+    },
 
+    formatTime(date) {
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    },
+    updateTime() {
+      setInterval(() => {
+        this.time = this.formatTime(new Date());
+      }, 60000); // Update every minute
+    },
+
+    fetchTempIcon() {
+      const db = firebase.database();
+      db.ref("temp/tempmist").on("value", (snapshot) => {
+        this.iconValue = snapshot.val();
+      });
+    },
+    fetchPhUp() {
+      const db = firebase.database();
+      db.ref("ph/pHpumpHigh").on("value", (snapshot) => {
+        this.iconPhUpValue = snapshot.val();
+      });
+    },
+    fetchPhDown() {
+      const db = firebase.database();
+      db.ref("ph/pHpumpLow").on("value", (snapshot) => {
+        this.iconPhDownValue = snapshot.val();
+      });
+    },
+    fetchSolA() {
+      const db = firebase.database();
+      db.ref("tds/tdspumpA").on("value", (snapshot) => {
+        this.iconSolAValue = snapshot.val();
+      });
+    },
+    fetchSolB() {
+      const db = firebase.database();
+      db.ref("tds/tdspumpB").on("value", (snapshot) => {
+        this.iconSolBValue = snapshot.val();
+      });
+    },
+    fetchSolWater() {
+      const db = firebase.database();
+      db.ref("tds/tdswaterpump").on("value", (snapshot) => {
+        this.iconWaterValue = snapshot.val();
+      });
+    },
     //-----------------------------------------------------------------------------------------------
 
     //to fetch crop latest data
@@ -299,7 +532,7 @@ export default {
         const snapshot = await tdsRef.once("value");
         const data = snapshot.val();
         if (data && data.tdscurrent !== undefined) {
-          this.latestTds = parseFloat(data.tdscurrent.toFixed(1));
+          this.latestTds = parseFloat(data.tdscurrent.toFixed(0));
         }
       } catch (error) {
         console.error("Error fetching latest Tds data:", error);
@@ -320,8 +553,7 @@ export default {
       }
     },
 
-
-    async removeCurrentPlanted(){
+    async removeCurrentPlanted() {
       Promise.all([
         firebase.database().ref("crop").set({
           name: "",
@@ -366,15 +598,15 @@ export default {
       this.showCurrentConfirmDialog = false;
 
       this.refTempMin();
-    this.refTempMax();
-    this.refHumidMin();
-    this.refHumidMax();
-    this.refPhMin();
-    this.refPhMax();
-    this.refTdsMin();
-    this.refTdsMax();
-    this.refWaterTempMin();
-    this.refWaterTempMax();
+      this.refTempMax();
+      this.refHumidMin();
+      this.refHumidMax();
+      this.refPhMin();
+      this.refPhMax();
+      this.refTdsMin();
+      this.refTdsMax();
+      this.refWaterTempMin();
+      this.refWaterTempMax();
     },
 
     //------------------------------------------------------------------------------------------------------------
@@ -499,7 +731,7 @@ export default {
         const snapshot = await waterTempRef.once("value");
         const data = snapshot.val();
         if (data && data.watermax !== undefined) {
-          this.waterTempMax = data.watermax;
+          this.waterTempMax = data.watermax; //baliktad sa water temp min sa max
         }
       } catch (error) {
         console.error("Error fetching latest ref water temp data:", error);
@@ -507,6 +739,14 @@ export default {
     },
   },
   mounted() {
+    this.updateTime();
+
+    this.fetchTempIcon();
+    this.fetchPhUp();
+    this.fetchPhDown();
+    this.fetchSolA();
+    this.fetchSolB();
+    this.fetchSolWater();
     //sensor valuess
     // this.fetchLatestTemp();
     // this.fetchLatestHumid();
@@ -536,12 +776,20 @@ export default {
     this.refTdsMax();
     this.refWaterTempMin();
     this.refWaterTempMax();
-
   },
 };
 </script>
   
   
   <style scoped>
+.crop-image-container {
+  position: relative;
+}
+.crop-image {
+  width: 100%;
+  height: 15vh;
+  border: 2px solid white;
+  border-radius: 3px;
+}
 </style>
   

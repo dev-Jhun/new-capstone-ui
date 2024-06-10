@@ -1,14 +1,27 @@
 <template>
   <v-container fluid>
+    <v-img src="/tic-logo.png" style="width: 80px; height: 80px;position: absolute; top: 0;"></v-img>
     <v-row justify="center" align="center" style="height: 100vh">
-      <v-col cols="12" sm="8" md="4">
-        <v-card class="mt-5" style="width: 450px; height: 450px" elevation="5">
-          <v-spacer></v-spacer>
+      
+      
+      <v-col cols="12" md="6" class="d-none d-md-flex align-center justify-center">
+        
+        <v-list style="background-color: transparent; margin-left: 100px;" dark>
+          <h1 style="text-align: center; margin-top: 0px;">The Internet Of Crops: Web-Based Monitoring for Smart Hydroponics</h1>
+          <br>
+          <br>
+        <p style="text-align: center;">"The Internet of Crops: Web-Based Monitoring for Smart Hydroponics.". The title describes a prototype that automates, monitors, and manually controls web-based crop planting.</p>
+        </v-list>
+        
+      </v-col>
+      <v-col cols="12" md="6" class="d-flex align-center justify-center">
+        <v-card class="mt-5 pa-3" style="width: 350px; height: 450px;border-radius: 20px;" elevation="5" color="#36454F" dark>
+          
           <v-col class="d-flex flex-column align-center justify-center">
-            <v-icon class="display-3" color="green">mdi-sprout-outline</v-icon>
-            <v-card-title class="login-title">TIC:WEB BASED MONITORING FOR SMART HYDROPONICS</v-card-title>
+            <!-- <v-icon class="display-3" color="green">mdi-login</v-icon> -->
+            <v-img src="/tic-logo.png" style="width: 150px; height: 150px;"></v-img>
+            <!-- <v-card-title class="login-title" style="font-size: 1.7rem;">LOGIN</v-card-title> -->
           </v-col>
-          <v-spacer></v-spacer>
 
           <v-card-text>
             <v-form @submit.prevent="login">
@@ -17,21 +30,27 @@
                 label="Username"
                 outlined
                 :rules="nameRules"
+                dense
               ></v-text-field>
               <v-text-field
                 v-model="password"
                 label="Password"
                 outlined
-                type="password"
+                :type="show1 ? 'text' : 'password'"
+                dense
                 :rules="nameRules"
+                @click:append="show1 = !show1"
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
               ></v-text-field>
-              <v-btn type="submit" color="primary" block>Login</v-btn>
+              <v-btn type="submit" color="success" block>LOGIN</v-btn>
             </v-form>
-            <!-- <div class="text-center mt-3">
-              <router-link to="/registration"
-                >Don't have an account? Register here</router-link
+            <br>
+            <div class="text-center mt-3">
+              Don't have an account?
+              <router-link to="" style="color: white"
+                >Sign Up</router-link
               >
-            </div> -->
+            </div>
           </v-card-text>
         </v-card>
         <!-- <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout">{{ snackbar.message }}</v-snackbar> -->
@@ -71,6 +90,7 @@ export default {
   layout: "login",
   data() {
     return {
+      show1: false,
       layout: "login",
       username: "",
       password: "",
@@ -126,7 +146,7 @@ export default {
 
 <style scoped>
 .login-title {
-  font-size: 24px;
+  font-size: 16px;
   text-align: center;
   justify-content: center;
 }

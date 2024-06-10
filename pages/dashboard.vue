@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="background" fluid>
     <!-- Confirmation Dialog -->
     <v-dialog v-model="showCurrentConfirmDialog" max-width="500">
       <v-card>
@@ -24,6 +24,7 @@
 
     <v-row>
       <v-col cols="12" md="4" sm="6">
+
         <v-card color="#36454F" dark>
           <v-list-item two-line class="d-flex justify-center align-center">
             <v-list-item-content>
@@ -32,7 +33,7 @@
               </v-list-item-title>
               <v-row>
                 <v-spacer></v-spacer>
-                <v-col cols="9" class="crop-image-container">
+                <v-col cols="9" class="crop-image-container d-flex justify-center align-center">
                   <v-dialog v-model="dialogImg" max-width="600px">
                     <template v-slot:activator="{ on }">
                       <img
@@ -58,6 +59,7 @@
         </v-card>
       </v-col>
       <v-spacer></v-spacer>
+
       <v-col cols="12" md="4" sm="6">
         <v-card color="#36454F" dark>
           <v-list-item two-line class="d-flex justify-center align-center">
@@ -254,7 +256,8 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row>
+
+    <!-- <v-row>
       <v-col cols="12" md="6">
         <v-card color="#36454F" dark height="400">
           <br>
@@ -290,7 +293,7 @@
           </v-card-text>
         </v-card>
       </v-col>
-    </v-row>
+    </v-row> -->
   </v-container>
 </template>
 
@@ -786,10 +789,21 @@ export default {
   position: relative;
 }
 .crop-image {
-  width: 100%;
-  height: 15vh;
+  width: 95px;
+  height: 95px;
   border: 2px solid white;
   border-radius: 3px;
 }
+.background {
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("https://www.treehugger.com/thmb/uHRjV9zEL2a-g1N5gaHxJiqpU3Q=/2121x1414/filters:fill(auto,1)/GettyImages-1194451296-46ea81725e834c9bbffea37679624336.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+
+
 </style>
   

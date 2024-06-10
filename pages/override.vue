@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="background" fluid>
     <v-row>
       <v-col cols="12">
         <v-card color="#36454F" elevation="2" class="switch-card" dark>
@@ -506,4 +506,12 @@ export default {
   height: 34px;
   width: 34px;
 }
+.background {
+    background-image: url("https://www.treehugger.com/thmb/uHRjV9zEL2a-g1N5gaHxJiqpU3Q=/2121x1414/filters:fill(auto,1)/GettyImages-1194451296-46ea81725e834c9bbffea37679624336.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative; /* Ensure the pseudo-element is positioned relative to this element */
+    width: 100%;
+    height: 100%;
+  }
 </style>

@@ -142,5 +142,11 @@ export default {
 .profile {
   background: rgb(22, 22, 22);
 }
+/* .background-img{
+    background: url("https://singularityhub.com/wp-content/uploads/2018/08/salad-crop-hydroponics-system-farm-agriculture_shutterstock_1162258756-1068x601.jpg");
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+  } */
 </style>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container class="background" fluid>
     <!-- Edit Confirmation Dialog -->
     <v-dialog v-model="editConfirmationDialog" max-width="500">
       <v-card>
@@ -1189,3 +1189,13 @@ export default {
   },
 };
 </script>
+<style scoped>
+.background {
+    background-image: url("https://www.treehugger.com/thmb/uHRjV9zEL2a-g1N5gaHxJiqpU3Q=/2121x1414/filters:fill(auto,1)/GettyImages-1194451296-46ea81725e834c9bbffea37679624336.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative; /* Ensure the pseudo-element is positioned relative to this element */
+    width: 100%;
+    height: 100%;
+  }
+</style>

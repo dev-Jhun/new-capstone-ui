@@ -47,8 +47,8 @@
             <br>
             <div class="text-center mt-3">
               Don't have an account?
-              <router-link to="" style="color: white"
-                >Sign Up</router-link
+              <router-link to="/registration" style="color: white"
+                >Register here</router-link
               >
             </div>
           </v-card-text>

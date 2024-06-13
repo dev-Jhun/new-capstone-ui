@@ -17,8 +17,8 @@
           <v-card-text>
             <v-form @submit.prevent="confirmRegistration">
               <v-text-field v-model="username" label="Username" outlined dense></v-text-field>
-              <v-text-field v-model="password" label="Password" outlined :type="show1 ? 'text' : 'password'" dense @click:append="show1 = !show1"
-                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"></v-text-field>
+              <v-text-field v-model="password" label="Password" outlined :type="show1 ? 'text' : 'password'" dense @click:append="show1 = !show1" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"></v-text-field>
+              <v-text-field v-model="confirmPassword" label="Confirm Password" outlined :type="show2 ? 'text' : 'password'" dense @click:append="show2 = !show2" :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"></v-text-field>
               <v-btn type="submit" color="success" block>Register</v-btn>
             </v-form>
             <br>
@@ -67,8 +67,10 @@ export default {
   data() {
     return {
       show1: false,
+      show2: false,
       username: '',
       password: '',
+      confirmPassword: '',
       snackbar: {
         show: false,
         message: '',
@@ -80,7 +82,11 @@ export default {
   },
   methods: {
     confirmRegistration() {
-      this.confirmationDialog = true;
+      if (this.password !== this.confirmPassword) {
+        this.showSnackbar('Passwords do not match.', 'error');
+      } else {
+        this.confirmationDialog = true;
+      }
     },
     async register() {
       try {
@@ -112,9 +118,6 @@ export default {
   }
 }
 </script>
-
-
-
 
 <style scoped>
 .login-title {
